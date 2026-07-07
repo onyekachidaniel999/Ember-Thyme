@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ember & Thyme | Fine Dining Restaurant</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --fire:#C0392B; --fire-light:#E74C3C; --fire-dark:#922B21;
+  --amber:#D4870A; --amber-light:#F39C12; --amber-pale:#FDF0D5;
+  --cream:#FAF3E0; --cream-dark:#F0E6CC;
+  --charcoal:#1C1C1C; --charcoal-mid:#2D2D2D; --charcoal-soft:#3D3D3D;
+  --herb:#2D5A27; --herb-light:#3D7A35;
+  --white:#FFFDF7;
+  --nav-h:70px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--charcoal);color:var(--white);font-family:'Raleway',sans-serif;overflow-x:hidden;}
+
+/* ===== HOURS TICKER ===== */
+.hours-ticker {
+  background:var(--fire-dark);
+  padding:9px 0;
+  overflow:hidden;
+  white-space:nowrap;
+  position:relative;
+  z-index:1001;
+}
+.hours-ticker-inner {
+  display:inline-flex;
+  gap:60px;
+  animation:ticker 28s linear infinite;
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--amber-pale);
+}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.t-sep{color:var(--amber-light);margin:0 10px;}
+.t-open{color:#7DFF6B;font-weight:700;}
+.t-closed{color:#FFB3B3;}
+
+/* ===== NAV ===== */
+nav{
+  position:fixed;top:36px;width:100%;z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 clamp(20px,5vw,64px);height:var(--nav-h);
+  background:rgba(28,28,28,0.94);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(212,135,10,0.2);
+  transition:all 0.3s;
+}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.logo-flame{font-size:28px;animation:flamePulse 2s ease-in-out infinite;}
+@keyframes flamePulse{0%,100%{transform:scale(1) rotate(-3deg)}50%{transform:scale(1.1) rotate(3deg)}}
+.logo-text{display:flex;flex-direction:column;line-height:1.1;}
+.logo-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--amber-light);letter-spacing:1px;}
+.logo-tagline{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:rgba(243,156,18,0.65);}
+
+.nav-links{display:flex;align-items:center;gap:30px;list-style:none;}
+.nav-links a{text-decoration:none;color:rgba(255,253,247,0.78);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;transition:color 0.3s;position:relative;}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--amber-light);transition:width 0.3s;}
+.nav-links a:hover{color:var(--amber-light);}
+.nav-links a:hover::after{width:100%;}
+.nav-reserve{background:var(--fire);color:var(--white)!important;padding:10px 22px;font-weight:700!important;letter-spacing:1px!important;transition:background 0.3s!important;}
+.nav-reserve::after{display:none!important;}
+.nav-reserve:hover{background:var(--fire-light)!important;}
+
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;}
+.hamburger span{display:block;width:24px;height:2px;background:var(--amber-light);transition:all 0.3s;}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mobile-menu{display:none;position:fixed;top:106px;left:0;width:100%;background:rgba(28,28,28,0.98);backdrop-filter:blur(14px);padding:16px 0;z-index:999;flex-direction:column;border-bottom:1px solid rgba(212,135,10,0.2);}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{display:block;padding:15px 32px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,253,247,0.8);text-decoration:none;border-bottom:1px solid rgba(212,135,10,0.08);transition:color 0.3s;}
+.mobile-menu a:hover{color:var(--amber-light);}
+.mobile-menu .m-reserve{background:var(--fire);color:var(--white)!important;margin:12px 32px 4px;text-align:center;font-weight:700;}
+
+/* ===== HERO ===== */
+.hero{
+  height:100vh;min-height:600px;
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;
+  padding-top:106px;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1800&q=80') center/cover;
+  animation:heroZoom 14s ease-in-out infinite alternate;
+}
+@keyframes heroZoom{from{transform:scale(1)}to{transform:scale(1.06)}}
+.hero-ov{
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(28,28,28,0.92) 0%,rgba(192,57,43,0.25) 50%,rgba(28,28,28,0.85) 100%);
+}
+/* Animated fire glow */
+.hero-glow{
+  position:absolute;bottom:-80px;left:50%;transform:translateX(-50%);
+  width:600px;height:300px;
+  background:radial-gradient(ellipse,rgba(192,57,43,0.35) 0%,transparent 70%);
+  animation:glowPulse 3s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes glowPulse{0%,100%{opacity:0.6;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.15)}}
+
+.hero-content{position:relative;z-index:10;padding:0 clamp(20px,6vw,80px);max-width:900px;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:10px;margin-bottom:22px;animation:fadeUp 0.9s ease 0.3s both;}
+.hero-eyebrow span{font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--amber-light);font-weight:600;}
+.eyebrow-line{width:40px;height:1px;background:var(--amber-light);}
+
+.hero-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(48px,8vw,96px);
+  font-weight:900;line-height:0.95;
+  color:var(--white);
+  margin-bottom:26px;
+  animation:fadeUp 0.9s ease 0.5s both;
+}
+.hero-title em{color:var(--amber-light);font-style:italic;}
+.hero-title .fire-word{
+  display:inline-block;
+  background:linear-gradient(135deg,var(--fire-light),var(--amber-light));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+.hero-desc{
+  font-size:clamp(14px,1.8vw,17px);font-weight:300;
+  color:rgba(255,253,247,0.75);line-height:1.85;
+  max-width:520px;margin-bottom:44px;
+  animation:fadeUp 0.9s ease 0.7s both;
+}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap;animation:fadeUp 0.9s ease 0.9s both;}
+
+.btn-fire{
+  background:linear-gradient(135deg,var(--fire),var(--fire-light));
+  color:var(--white);padding:16px 40px;
+  font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  text-decoration:none;border:none;cursor:pointer;
+  font-family:'Raleway',sans-serif;
+  transition:all 0.3s;display:inline-block;
+  box-shadow:0 4px 20px rgba(192,57,43,0.4);
+}
+.btn-fire:hover{background:linear-gradient(135deg,var(--fire-light),var(--amber));transform:translateY(-3px);box-shadow:0 8px 28px rgba(192,57,43,0.5);}
+.btn-outline-warm{
+  border:1px solid rgba(212,135,10,0.6);color:var(--amber-light);
+  padding:16px 40px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;
+  text-decoration:none;transition:all 0.3s;display:inline-block;
+}
+.btn-outline-warm:hover{border-color:var(--amber-light);background:rgba(212,135,10,0.12);}
+
+.hero-badges{
+  position:absolute;bottom:clamp(30px,5vw,50px);right:clamp(20px,5vw,60px);
+  display:flex;gap:clamp(16px,3vw,32px);z-index:10;
+  animation:fadeUp 0.9s ease 1.1s both;
+}
+.hbadge{text-align:center;}
+.hbadge-num{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,42px);font-weight:700;color:var(--amber-light);line-height:1;}
+.hbadge-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,253,247,0.55);margin-top:4px;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== SHARED ===== */
+.section-label{font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--amber);margin-bottom:14px;display:block;}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(32px,4vw,52px);font-weight:700;line-height:1.15;color:var(--white);}
+.amber-line{width:56px;height:2px;background:linear-gradient(90deg,var(--fire),var(--amber-light));margin:20px 0;}
+.reveal{opacity:0;transform:translateY(36px);transition:opacity 0.8s ease,transform 0.8s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.rd1{transition-delay:0.12s;}.rd2{transition-delay:0.24s;}.rd3{transition-delay:0.36s;}
+
+/* ===== ABOUT STRIP ===== */
+.about-strip{
+  background:var(--charcoal-mid);
+  padding:clamp(60px,8vw,100px) clamp(20px,6vw,80px);
+  display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,6vw,80px);
+  align-items:center;
+}
+.about-img-wrap{position:relative;height:clamp(320px,45vw,520px);}
+.about-img-main{
+  position:absolute;top:0;left:0;width:72%;height:82%;
+  background:url('https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=800&q=80') center/cover;
+  animation:floatY 6s ease-in-out infinite;
+}
+.about-img-accent{
+  position:absolute;bottom:0;right:0;width:52%;height:52%;
+  background:url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80') center/cover;
+  border:5px solid var(--charcoal-mid);
+  animation:floatY 6s ease-in-out infinite reverse;
+}
+.about-award{
+  position:absolute;top:48%;left:52%;transform:translate(-50%,-50%);
+  background:linear-gradient(135deg,var(--fire-dark),var(--fire));
+  color:var(--white);width:100px;height:100px;border-radius:50%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;z-index:10;
+  box-shadow:0 8px 24px rgba(192,57,43,0.5);
+}
+.about-award .aw-num{font-size:26px;font-weight:700;line-height:1;}
+.about-award .aw-txt{font-size:8px;letter-spacing:1px;font-weight:600;text-align:center;}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+
+.about-body{color:rgba(255,253,247,0.7);line-height:1.9;font-size:15px;margin-bottom:22px;}
+.about-perks{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:32px;}
+.perk{display:flex;align-items:flex-start;gap:10px;}
+.perk-icon{font-size:18px;flex-shrink:0;margin-top:2px;}
+.perk-text h4{font-size:12px;font-weight:700;color:var(--amber-light);letter-spacing:1px;margin-bottom:2px;}
+.perk-text p{font-size:11px;color:rgba(255,253,247,0.55);}
+
+/* ===== MENU SECTION ===== */
+.menu-section{
+  padding:clamp(60px,8vw,100px) clamp(20px,6vw,80px);
+  background:var(--charcoal);
+}
+.menu-header{text-align:center;margin-bottom:clamp(40px,6vw,64px);}
+.menu-tabs{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:28px;}
+.mtab{
+  background:transparent;border:1px solid rgba(212,135,10,0.3);
+  color:rgba(255,253,247,0.65);padding:9px 22px;
+  font-family:'Raleway',sans-serif;font-size:10px;font-weight:600;
+  letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;
+}
+.mtab:hover,.mtab.active{background:var(--fire);border-color:var(--fire);color:var(--white);}
+
+.menu-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:2px;
+  margin-top:8px;
+}
+
+/* MENU CARD */
+.mcard{
+  position:relative;overflow:hidden;cursor:pointer;
+  height:clamp(220px,25vw,300px);
+  background:var(--charcoal-soft);
+}
+.mcard-img{
+  position:absolute;inset:0;
+  background-size:cover;background-position:center;
+  transition:transform 0.7s ease;
+}
+.mcard:hover .mcard-img{transform:scale(1.1);}
+.mcard-dark{position:absolute;inset:0;background:linear-gradient(to top,rgba(28,28,28,0.97) 0%,rgba(28,28,28,0.5) 50%,transparent 100%);}
+
+/* Default info (always visible) */
+.mcard-base{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:clamp(16px,2.5vw,24px);
+  transform:translateY(0);transition:transform 0.4s ease;
+}
+/* Hover overlay (slides up with full details) */
+.mcard-hover{
+  position:absolute;inset:0;
+  padding:clamp(20px,3vw,30px);
+  display:flex;flex-direction:column;justify-content:center;
+  background:linear-gradient(135deg,rgba(192,57,43,0.92),rgba(28,28,28,0.95));
+  transform:translateY(100%);
+  transition:transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.mcard:hover .mcard-base{transform:translateY(60px);opacity:0;}
+.mcard:hover .mcard-hover{transform:translateY(0);}
+
+.mcard-tag{
+  display:inline-block;background:var(--amber);color:var(--charcoal);
+  font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  padding:3px 10px;margin-bottom:8px;
+}
+.mcard-name{font-family:'Playfair Display',serif;font-size:clamp(18px,2.5vw,24px);font-weight:700;color:var(--white);margin-bottom:4px;}
+.mcard-price{font-family:'Playfair Display',serif;font-size:clamp(18px,2.2vw,22px);font-weight:600;color:var(--amber-light);}
+
+.mcard-hover-name{font-family:'Playfair Display',serif;font-size:clamp(20px,2.8vw,28px);font-weight:700;color:var(--white);margin-bottom:8px;}
+.mcard-hover-desc{font-size:13px;color:rgba(255,253,247,0.82);line-height:1.7;margin-bottom:14px;}
+.mcard-hover-price{font-family:'Playfair Display',serif;font-size:clamp(22px,2.8vw,30px);font-weight:700;color:var(--amber-light);margin-bottom:6px;}
+.mcard-varieties{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.variety-tag{border:1px solid rgba(243,156,18,0.5);color:var(--amber-light);font-size:9px;letter-spacing:1px;padding:3px 10px;text-transform:uppercase;}
+
+/* Featured card — full width */
+.mcard-feat{grid-column:span 2;height:clamp(200px,22vw,260px);}
+
+/* Food images */
+.fi1{background-image:url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=900&q=80');}
+.fi2{background-image:url('https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=900&q=80');}
+.fi3{background-image:url('https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=900&q=80');}
+.fi4{background-image:url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=900&q=80');}
+.fi5{background-image:url('https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=900&q=80');}
+.fi6{background-image:url('https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=900&q=80');}
+.fi7{background-image:url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=900&q=80');}
+.fi8{background-image:url('https://images.unsplash.com/photo-1529042410759-befb1204b468?w=900&q=80');}
+.fi9{background-image:url('https://images.unsplash.com/photo-1551183053-bf91798d792d?w=900&q=80');}
+.fi10{background-image:url('https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=900&q=80');}
+
+/* ===== EXPERIENCE BAND ===== */
+.exp-band{
+  background:url('https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=1800&q=80') center/cover fixed;
+  position:relative;padding:clamp(70px,10vw,120px) clamp(20px,6vw,80px);
+  text-align:center;
+}
+.exp-band::before{content:'';position:absolute;inset:0;background:rgba(28,28,28,0.88);}
+.exp-inner{position:relative;z-index:2;max-width:680px;margin:0 auto;}
+.exp-inner h2{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,58px);font-weight:700;color:var(--white);margin-bottom:18px;line-height:1.15;}
+.exp-inner h2 em{color:var(--amber-light);font-style:italic;}
+.exp-inner p{color:rgba(255,253,247,0.72);font-size:16px;line-height:1.8;margin-bottom:36px;}
+.exp-stats{display:flex;justify-content:center;gap:clamp(24px,5vw,60px);margin-bottom:40px;flex-wrap:wrap;}
+.estat{text-align:center;}
+.estat-num{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,48px);font-weight:700;color:var(--amber-light);line-height:1;}
+.estat-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,253,247,0.55);margin-top:5px;}
+
+/* ===== HOURS & CONTACT ===== */
+.hours-contact{
+  display:grid;grid-template-columns:1fr 1fr;
+  background:var(--charcoal-mid);
+}
+.hc-col{padding:clamp(50px,7vw,90px) clamp(24px,5vw,70px);}
+.hc-col:first-child{border-right:1px solid rgba(212,135,10,0.12);}
+
+.hours-list{margin-top:28px;display:flex;flex-direction:column;gap:14px;}
+.hrow{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid rgba(212,135,10,0.08);}
+.hrow:last-child{border-bottom:none;}
+.hrow-day{font-size:13px;font-weight:600;color:rgba(255,253,247,0.85);letter-spacing:1px;}
+.hrow-time{font-size:12px;color:var(--amber-light);font-weight:600;}
+.hrow-time.closed{color:rgba(255,100,100,0.8);}
+.hrow-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.dot-open{background:#7DFF6B;box-shadow:0 0 8px #7DFF6B;animation:dotPulse 1.5s ease-in-out infinite;}
+.dot-closed{background:rgba(255,100,100,0.6);}
+@keyframes dotPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.7)}}
+
+.contact-items{margin-top:28px;display:flex;flex-direction:column;gap:22px;}
+.c-row{display:flex;gap:18px;align-items:flex-start;}
+.c-icon-box{
+  width:46px;height:46px;flex-shrink:0;
+  background:rgba(192,57,43,0.15);border:1px solid rgba(192,57,43,0.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+}
+.c-lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--amber);margin-bottom:4px;}
+.c-val{font-size:13px;color:rgba(255,253,247,0.8);line-height:1.6;}
+.c-val a{color:var(--amber-light);text-decoration:none;}
+
+/* ===== RESERVATION SECTION ===== */
+.reservation{
+  padding:clamp(60px,8vw,100px) clamp(20px,6vw,80px);
+  background:var(--charcoal);
+  display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,6vw,80px);
+  align-items:center;
+}
+.res-img{
+  height:clamp(320px,42vw,520px);
+  background:url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80') center/cover;
+  position:relative;
+}
+.res-img::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(192,57,43,0.3),transparent);
+}
+.res-form{display:flex;flex-direction:column;gap:18px;}
+.rf-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.rf-group{display:flex;flex-direction:column;gap:7px;}
+.rf-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(212,135,10,0.8);}
+.rf-input,.rf-select,.rf-textarea{
+  background:rgba(255,255,255,0.05);border:1px solid rgba(212,135,10,0.2);
+  color:var(--white);padding:13px 16px;
+  font-family:'Raleway',sans-serif;font-size:13px;
+  transition:border-color 0.3s;outline:none;width:100%;
+}
+.rf-input:focus,.rf-select:focus,.rf-textarea:focus{border-color:var(--amber);background:rgba(212,135,10,0.05);}
+.rf-select option{background:var(--charcoal-mid);}
+.rf-textarea{min-height:100px;resize:vertical;}
+.rf-submit{
+  background:linear-gradient(135deg,var(--fire),var(--fire-light));
+  color:var(--white);border:none;cursor:pointer;
+  padding:16px 40px;font-family:'Raleway',sans-serif;
+  font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  transition:all 0.3s;align-self:flex-start;
+  box-shadow:0 4px 20px rgba(192,57,43,0.35);
+}
+.rf-submit:hover{background:linear-gradient(135deg,var(--fire-light),var(--amber));transform:translateY(-2px);box-shadow:0 8px 28px rgba(192,57,43,0.5);}
+
+/* ===== FOOTER ===== */
+footer{
+  background:var(--charcoal-mid);
+  border-top:1px solid rgba(212,135,10,0.12);
+  padding:clamp(40px,6vw,60px) clamp(20px,6vw,80px) 24px;
+}
+.footer-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:24px;margin-bottom:32px;}
+.footer-tagline{font-family:'Playfair Display',serif;font-size:clamp(20px,3vw,28px);font-style:italic;color:var(--amber-light);}
+.footer-links{display:flex;gap:24px;flex-wrap:wrap;}
+.footer-links a{text-decoration:none;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,253,247,0.55);transition:color 0.3s;}
+.footer-links a:hover{color:var(--amber-light);}
+.footer-bottom{border-top:1px solid rgba(212,135,10,0.08);padding-top:20px;display:flex;align-items:center;justify-content:space-between;font-size:11px;color:rgba(255,253,247,0.35);flex-wrap:wrap;gap:10px;}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1024px){
+  .about-strip,.reservation{grid-template-columns:1fr;}
+  .about-img-wrap{height:clamp(280px,55vw,400px);}
+  .hours-contact{grid-template-columns:1fr;}
+  .hc-col:first-child{border-right:none;border-bottom:1px solid rgba(212,135,10,0.12);}
+  .menu-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:768px){
+  nav{padding:0 20px;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .hero-badges{display:none;}
+  .menu-grid{grid-template-columns:1fr;}
+  .mcard-feat{grid-column:span 1;}
+  .rf-row{grid-template-columns:1fr;}
+  .about-perks{grid-template-columns:1fr;}
+  .footer-top{flex-direction:column;text-align:center;}
+  .footer-bottom{flex-direction:column;text-align:center;}
+  .exp-stats{gap:24px;}
+}
+@media(max-width:480px){
+  .hero-btns{flex-direction:column;}
+  .btn-fire,.btn-outline-warm{text-align:center;width:100%;}
+  .menu-tabs{gap:6px;}
+  .mtab{padding:8px 14px;font-size:9px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HOURS TICKER ===== -->
+<div class="hours-ticker">
+  <div class="hours-ticker-inner">
+    <span>🔥 Ember &amp; Thyme</span>
+    <span class="t-sep">|</span>
+    <span class="t-open">● OPEN NOW</span>
+    <span class="t-sep">|</span>
+    <span>Mon – Fri: 11:00 AM – 11:00 PM</span>
+    <span class="t-sep">✦</span>
+    <span>Sat – Sun: 10:00 AM – 12:00 AM</span>
+    <span class="t-sep">|</span>
+    <span>📍 87 King Street West, Toronto, ON M5H 1S3</span>
+    <span class="t-sep">✦</span>
+    <span>📞 Reservations: +1 (416) 555 0192</span>
+    <span class="t-sep">|</span>
+    <span class="t-open">● OPEN NOW</span>
+    <span class="t-sep">|</span>
+    <!-- Repeat for seamless loop -->
+    <span>🔥 Ember &amp; Thyme</span>
+    <span class="t-sep">|</span>
+    <span class="t-open">● OPEN NOW</span>
+    <span class="t-sep">|</span>
+    <span>Mon – Fri: 11:00 AM – 11:00 PM</span>
+    <span class="t-sep">✦</span>
+    <span>Sat – Sun: 10:00 AM – 12:00 AM</span>
+    <span class="t-sep">|</span>
+    <span>📍 87 King Street West, Toronto, ON M5H 1S3</span>
+    <span class="t-sep">✦</span>
+    <span>📞 Reservations: +1 (416) 555 0192</span>
+    <span class="t-sep">|</span>
+    <span class="t-open">● OPEN NOW</span>
+    <span class="t-sep">|</span>
+  </div>
+</div>
+
+<!-- ===== NAV ===== -->
+<nav id="mainNav">
+  <a class="logo" href="#home">
+    <div class="logo-flame">🔥</div>
+    <div class="logo-text">
+      <span class="logo-name">Ember & Thyme</span>
+      <span class="logo-tagline">Fine Dining — Est. 2014</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#reserve" class="nav-reserve">Reserve a Table</a></li>
+  </ul>
+  <div class="hamburger" id="ham" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#home" onclick="closeMenu()">Home</a>
+  <a href="#about" onclick="closeMenu()">About</a>
+  <a href="#menu" onclick="closeMenu()">Menu</a>
+  <a href="#contact" onclick="closeMenu()">Contact</a>
+  <a href="#reserve" class="m-reserve" onclick="closeMenu()">Reserve a Table</a>
+</div>
+
+<!-- ===== HERO ===== -->
+<section id="home" class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-ov"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <div class="eyebrow-line"></div>
+      <span>Fine Dining in Toronto</span>
+      <div class="eyebrow-line"></div>
+    </div>
+    <h1 class="hero-title">
+      Where Every<br>
+      <span class="fire-word">Flame</span> Tells<br>
+      <em>a Story</em>
+    </h1>
+    <p class="hero-desc">Wood-fired cuisine crafted with seasonal ingredients and decades of culinary passion. Come hungry. Leave inspired.</p>
+    <div class="hero-btns">
+      <a href="#menu" class="btn-fire">Explore Our Menu</a>
+      <a href="#reserve" class="btn-outline-warm">Reserve a Table</a>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <div class="hbadge"><div class="hbadge-num">10+</div><div class="hbadge-lbl">Years of Craft</div></div>
+    <div class="hbadge"><div class="hbadge-num">4.9★</div><div class="hbadge-lbl">Guest Rating</div></div>
+    <div class="hbadge"><div class="hbadge-num">200+</div><div class="hbadge-lbl">Dishes Mastered</div></div>
+  </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section id="about" class="about-strip">
+  <div class="about-img-wrap reveal">
+    <div class="about-img-main"></div>
+    <div class="about-img-accent"></div>
+    <div class="about-award"><span class="aw-num">10+</span><span class="aw-txt">Yrs of Excellence</span></div>
+  </div>
+  <div>
+    <span class="section-label">Our Story</span>
+    <h2 class="section-title reveal">Fired by Passion,<br>Seasoned by Time</h2>
+    <div class="amber-line"></div>
+    <p class="about-body reveal rd1">Ember & Thyme was born from a simple belief — that great food is not just eaten, it's <em>felt</em>. Founded in 2014 in Toronto, we combine the ancient art of open-flame cooking with modern culinary innovation to create dishes that linger long after the last bite.</p>
+    <p class="about-body reveal rd1">Every ingredient is sourced fresh. Every dish is crafted with intention. Every visit is designed to be unforgettable.</p>
+    <div class="about-perks reveal rd2">
+      <div class="perk"><span class="perk-icon">🌿</span><div class="perk-text"><h4>Fresh & Local</h4><p>Farm-to-table ingredients daily.</p></div></div>
+      <div class="perk"><span class="perk-icon">🔥</span><div class="perk-text"><h4>Wood-Fired</h4><p>Open-flame cooking tradition.</p></div></div>
+      <div class="perk"><span class="perk-icon">👨‍🍳</span><div class="perk-text"><h4>Master Chefs</h4><p>Trained in 3 continents.</p></div></div>
+      <div class="perk"><span class="perk-icon">🍷</span><div class="perk-text"><h4>Curated Wine</h4><p>Perfect pairings for every dish.</p></div></div>
+    </div>
+    <a href="#reserve" class="btn-fire reveal rd3">Book Your Table</a>
+  </div>
+</section>
+
+<!-- ===== MENU ===== -->
+<section id="menu" class="menu-section">
+  <div class="menu-header">
+    <span class="section-label">What We Serve</span>
+    <h2 class="section-title reveal">Our Signature Menu</h2>
+    <p style="color:rgba(255,253,247,0.6);font-size:14px;margin-top:12px;max-width:500px;margin-left:auto;margin-right:auto;" class="reveal rd1">Hover over any dish to see full details, varieties and pricing. Every plate tells its own story.</p>
+    <div class="menu-tabs">
+      <button class="mtab active" onclick="filterMenu(this,'all')">All</button>
+      <button class="mtab" onclick="filterMenu(this,'starters')">Starters</button>
+      <button class="mtab" onclick="filterMenu(this,'mains')">Mains</button>
+      <button class="mtab" onclick="filterMenu(this,'grills')">Grills</button>
+      <button class="mtab" onclick="filterMenu(this,'desserts')">Desserts</button>
+    </div>
+  </div>
+
+  <div class="menu-grid">
+
+    <!-- 1. Ember Bruschetta -->
+    <div class="mcard reveal" data-cat="starters">
+      <div class="mcard-img fi1"></div>
+      <div class="mcard-dark"></div>
+      <div class="mcard-base">
+        <span class="mcard-tag">Starter</span>
+        <div class="mcard-name">Ember Bruschetta</div>
+        <div class="mcard-price">from CA$18</div>
+      </div>
+      <div class="mcard-hover">
+        <div class="mcard-hover-name">Ember Bruschetta</div>
+        <div class="mcard-hover-desc">Charred sourdough topped with heirloom tomatoes, fresh basil, garlic oil, and aged parmesan — kissed by open flame.</div>
+        <div class="mcard-hover-price">CA$18</div>
+        <div class="mcard-varieties">
+          <span class="variety-tag">Classic Tomato</span>
+          <span class="variety-tag">Avocado & Feta</span>
+          <span class="variety-tag">Mushroom Truffle</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Signature Ribeye -->
+    <div class="mcard reveal rd1" data-cat="grills">
+      <div class="mcard-img fi2"></div>
+      <div class="mcard-dark"></div>
+      <div class="mcard-base">
+        <span class="mcard-tag">⭐ Signature</span>
+        <div class="mcard-name">Signature Ribeye</div>
+        <div class="mcard-price">from CA$110</div>
+      </div>
+      <div class="mcard-hover">
+        <div class="mcard-hover-name">Signature Ribeye</div>
+        <div class="mcard-hover-desc">28-day dry-aged ribeye, wood-fired to perfection. Served with truffle butter, roasted bone marrow, and seasonal vegetables.</div>
+        <div class="mcard-hover-price">from CA$110</div>
+        <div class="mcard-varieties">
+          <span class="variety-tag">Medium Rare</span>
+          <span class="variety-tag">Medium</span>
+          <span class="variety-tag">Well Done</span>
+          <span class="variety-tag">300g / 500g</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Pancakes (featured) -->
+    <div class="mcard mcard-feat reveal" data-cat="starters">
+      <div class="mcard-img fi3"></div>
+      <div class="mcard-dark"></div>
+      <div class="mcard-base">
+        <span class="mcard-tag">Popular</span>
+        <div class="mcard-name">Fluffy Stack Pancakes</div>
+        <div class="mcard-price">from CA$22</div>
+      </div>
+      <div class="mcard-hover">
+        <div class="mcard-hover-name">Fluffy Stack Pancakes</div>
+        <div class="mcard-hover-desc">Towering buttermilk pancakes with whipped cream, seasonal berries, candied pecans, and warm maple syrup. A breakfast masterpiece available all day.</div>
+        <div class="mcard-hover-price">from CA$22</div>
+        <div class="mcard-varieties">
+          <span class="variety-tag">Classic Maple</span>
+          <span class="variety-tag">Berry Compote</span>
+          <span class="variety-tag">Chocolate Hazelnut</span>
+          <span class="variety-tag">Banana Caramel</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Wood-Fired Pizza -->
+    <div class="mcard reveal" data-cat="mains">
+      <div class="mcard-img fi4"></div>
+      <div class="mcard-dark"></div>
+      <div class="mcard-base">
+        <span class="mcard-tag">Mains</span>
+        <div class="mcard-name">Wood-Fired Pizza</div>
+        <div class="mcard-price">from CA$45</div>
+      </div>
+      <div class="mcard-hover">
+        <div class="mcard-hover-name">Wood-Fired Pizza</div>
+        <div class="mcard-hover-desc">Neapolitan-style thin crust, blistered in our 400°C wood-fired oven. San Marzano tomatoes, fior di latte, and fresh basil.</div>
+        <div class="mcard-hover-price">from CA$45</div>
+        <div class="mcard-varieties">
+          <span class="variety-tag">Margherita</span>
+          <span class="variety-tag">BBQ Chicken</span>
+          <span class="variety-tag">Truffle Mushroom</span>
+          <span class="variety-tag">Pepperoni Fire</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Garden Harvest Salad -->
+    <div class="mcard reveal rd1" data-cat="starters">
+      <div class="mcard-img fi5"></div>
+      <div class="mcard-dark"></div>
+      <div class="mcard-base">
+        <span class="mcard-tag">Starter</span>
+        <div class="mcard-name">Garden Harvest Salad</div>
+        <div class="mcard-price">CA$28</div>
+      </div>
+      <div class="mcard-hover">
+        <div class="mcard-hover-name">Garden Harvest Salad</div>
+        <div class="mcard-hover-desc">Heirloom greens, roasted beets, candied walnuts, goat cheese, seasonal fruits, and our signature herb vinaigrette dressing.</div>
+        <div class="mcard-hover-price">CA$28</div>
+        <div class="mcard-varieties">
+          <span class="variety-tag">Add Grilled Chicken +CA$8</span>
+          <span class="variety-tag">Add Smoked Salmon +CA$14</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Thyme Salmon -->
+    <div class="mcard reveal" data-cat="mains">
+      <div class="mcard-img fi6"></div>
+      <div class="mcard-dark"></div>
+      <div class="mcard-base">
+        <span class="mcard-tag">Mains</span>
+        <div class="mcard-name">Thyme Butter Salmon</div>
+        <div class="mcard-price">CA$85</div>
+      </div>
+      <div class="mcard-hover">
+        <div class="mcard-hover-name">Thyme Butter Salmon</div>
+        <div class="mcard-hover-desc">Pan-seared Atlantic salmon with herb butter sauce, lemon caper relish, asparagus, and wild rice. Light, elegant, unforgettable.</div>
+        <div class="mcard-hover-price">CA$85</div>
+        <div class="mcard-varieties">
+          <span class="variety-tag">Grilled Option</span>
+          <span class="variety-tag">Pan Seared</span>
+          <span class="variety-tag">Poached</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Ember Suya Platter -->
+    <div class="mcard reveal rd1" data-cat="grills">
+      <div class="mcard-img fi7"></div>
+      <div class="mcard-dark"></div>
+      <div class="mcard-base">
+        <span class="mcard-tag">🔥 Grill</span>
+        <div class="mcard-name">Ember Suya Platter</div>
+        <div class="mcard-price">from CA$70</div>
+      </div>
+      <div class="mcard-hover">
+        <div class="mcard-hover-name">Ember Suya Platter</div>
+        <div class="mcard-hover-desc">Our African-inspired wood-fired suya — premium beef skewers in house-blend spice rub, served with fresh tomato salad, onions, and suya sauce.</div>
+        <div class="mcard-hover-price">from CA$70</div>
+        <div class="mcard-varieties">
+          <span class="variety-tag">Beef (500g)</span>
+          <span class="variety-tag">Chicken (500g)</span>
+          <span class="variety-tag">Mixed Platter</span>
+          <span class="variety-tag">Add Chips +CA$6</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. Lava Cake -->
+    <div class="mcard reveal" data-cat="desserts">
+      <div class="mcard-img fi8"></div>
+      <div class="mcard-dark"></div>
+      <div class="mcard-base">
+        <span class="mcard-tag">Dessert</span>
+        <div class="mcard-name">Molten Lava Cake</div>
+        <div class="mcard-price">CA$32</div>
+      </div>
+      <div class="mcard-hover">
+        <div class="mcard-hover-name">Molten Lava Cake</div>
+        <div class="mcard-hover-desc">Warm dark chocolate lava cake with a flowing center, served with vanilla bean ice cream, raspberry coulis, and gold leaf.</div>
+        <div class="mcard-hover-price">CA$32</div>
+        <div class="mcard-varieties">
+          <span class="variety-tag">Dark Chocolate</span>
+          <span class="variety-tag">Salted Caramel</span>
+          <span class="variety-tag">Peanut Butter</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. Stuffed Pasta -->
+    <div class="mcard reveal rd1" data-cat="mains">
+      <div class="mcard-img fi9"></div>
+      <div class="mcard-dark"></div>
+      <div class="mcard-base">
+        <span class="mcard-tag">Mains</span>
+        <div class="mcard-name">Handmade Pasta</div>
+        <div class="mcard-price">from CA$55</div>
+      </div>
+      <div class="mcard-hover">
+        <div class="mcard-hover-name">Handmade Pasta</div>
+        <div class="mcard-hover-desc">Fresh-rolled egg pasta made in-house daily. Choose your sauce and protein. Finished tableside with fresh parmesan and cracked pepper.</div>
+        <div class="mcard-hover-price">from CA$55</div>
+        <div class="mcard-varieties">
+          <span class="variety-tag">Carbonara</span>
+          <span class="variety-tag">Bolognese</span>
+          <span class="variety-tag">Cacio e Pepe</span>
+          <span class="variety-tag">Seafood Aglio</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10. Dessert Platter (featured) -->
+    <div class="mcard mcard-feat reveal" data-cat="desserts">
+      <div class="mcard-img fi10"></div>
+      <div class="mcard-dark"></div>
+      <div class="mcard-base">
+        <span class="mcard-tag">⭐ Must Try</span>
+        <div class="mcard-name">Ember Dessert Platter</div>
+        <div class="mcard-price">CA$58 for 2</div>
+      </div>
+      <div class="mcard-hover">
+        <div class="mcard-hover-name">Ember Dessert Platter</div>
+        <div class="mcard-hover-desc">A curated dessert experience for two — lava cake, crème brûlée, macarons, seasonal sorbet, and petit fours. The perfect sweet finale to your evening.</div>
+        <div class="mcard-hover-price">CA$58 for 2</div>
+        <div class="mcard-varieties">
+          <span class="variety-tag">For 2 People</span>
+          <span class="variety-tag">For 4 People CA$110</span>
+          <span class="variety-tag">Add Wine Pairing +CA$30</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="text-align:center;margin-top:48px;">
+    <p style="color:rgba(255,253,247,0.55);font-size:13px;margin-bottom:20px;">View our complete menu with drinks, specials and seasonal dishes</p>
+    <a href="#reserve" class="btn-fire">Reserve & Order Now</a>
+  </div>
+</section>
+
+<!-- ===== EXPERIENCE BAND ===== -->
+<div class="exp-band">
+  <div class="exp-inner">
+    <span class="section-label" style="text-align:center;">Why Choose Us</span>
+    <h2 class="reveal">An Experience <em>Beyond</em> the Plate</h2>
+    <p class="reveal rd1">From the first flame to the final bite, every detail at Ember & Thyme is crafted to create memories that outlast the meal.</p>
+    <div class="exp-stats reveal rd1">
+      <div class="estat"><div class="estat-num">10+</div><div class="estat-lbl">Years Open</div></div>
+      <div class="estat"><div class="estat-num">4.9★</div><div class="estat-lbl">Guest Rating</div></div>
+      <div class="estat"><div class="estat-num">200+</div><div class="estat-lbl">Menu Items</div></div>
+      <div class="estat"><div class="estat-num">50K+</div><div class="estat-lbl">Happy Guests</div></div>
+    </div>
+    <a href="#reserve" class="btn-fire reveal rd2">Book Your Experience</a>
+  </div>
+</div>
+
+<!-- ===== HOURS & CONTACT ===== -->
+<section id="contact" class="hours-contact">
+  <!-- HOURS -->
+  <div class="hc-col">
+    <span class="section-label">Opening Hours</span>
+    <h2 class="section-title reveal" style="font-size:clamp(26px,3.5vw,40px);">We're Open<br>Almost Every Day</h2>
+    <div class="amber-line"></div>
+    <div class="hours-list">
+      <div class="hrow"><span class="hrow-day">Monday</span><span class="hrow-time">11:00 AM – 11:00 PM</span><div class="hrow-dot dot-open"></div></div>
+      <div class="hrow"><span class="hrow-day">Tuesday</span><span class="hrow-time">11:00 AM – 11:00 PM</span><div class="hrow-dot dot-open"></div></div>
+      <div class="hrow"><span class="hrow-day">Wednesday</span><span class="hrow-time">11:00 AM – 11:00 PM</span><div class="hrow-dot dot-open"></div></div>
+      <div class="hrow"><span class="hrow-day">Thursday</span><span class="hrow-time">11:00 AM – 11:00 PM</span><div class="hrow-dot dot-open"></div></div>
+      <div class="hrow"><span class="hrow-day">Friday</span><span class="hrow-time">11:00 AM – 12:00 AM</span><div class="hrow-dot dot-open"></div></div>
+      <div class="hrow"><span class="hrow-day">Saturday</span><span class="hrow-time">10:00 AM – 12:00 AM</span><div class="hrow-dot dot-open"></div></div>
+      <div class="hrow"><span class="hrow-day">Sunday</span><span class="hrow-time closed">Closed — Private Events</span><div class="hrow-dot dot-closed"></div></div>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="hc-col">
+    <span class="section-label">Find Us</span>
+    <h2 class="section-title reveal" style="font-size:clamp(26px,3.5vw,40px);">Come Dine<br>With Us</h2>
+    <div class="amber-line"></div>
+    <div class="contact-items">
+      <div class="c-row reveal">
+        <div class="c-icon-box">📍</div>
+        <div><div class="c-lbl">Address</div><div class="c-val">14 Gourmet Avenue,<br>King Street West, Toronto, Ontario, Canada</div></div>
+      </div>
+      <div class="c-row reveal">
+        <div class="c-icon-box">📞</div>
+        <div><div class="c-lbl">Phone</div><div class="c-val"><a href="tel:+14165550192">+1 (416) 555 0192</a><br><a href="tel:+14165550347">+1 (416) 555 0347</a></div></div>
+      </div>
+      <div class="c-row reveal">
+        <div class="c-icon-box">✉️</div>
+        <div><div class="c-lbl">Email</div><div class="c-val"><a href="mailto:hello@emberthyme.ca">hello@emberthyme.ca</a><br><a href="mailto:reservations@emberthyme.ca">reservations@emberthyme.ca</a></div></div>
+      </div>
+      <div class="c-row reveal">
+        <div class="c-icon-box">🌐</div>
+        <div><div class="c-lbl">Social</div><div class="c-val"><a href="#">@emberthyme</a> on Instagram, Facebook & TikTok</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== RESERVATION ===== -->
+<section id="reserve" class="reservation">
+  <div class="res-img reveal"></div>
+  <div>
+    <span class="section-label">Make a Reservation</span>
+    <h2 class="section-title reveal">Reserve Your<br><em style="color:var(--amber-light);">Perfect Evening</em></h2>
+    <div class="amber-line"></div>
+    <p style="color:rgba(255,253,247,0.65);font-size:14px;line-height:1.8;margin-bottom:28px;" class="reveal rd1">Secure your table today. Walk-ins welcome but reservations get priority seating and our complimentary welcome amuse-bouche.</p>
+    <form class="res-form reveal rd1" onsubmit="submitReservation(event)">
+      <div class="rf-row">
+        <div class="rf-group"><label class="rf-label">Full Name</label><input class="rf-input" type="text" placeholder="Your full name" required></div>
+        <div class="rf-group"><label class="rf-label">Phone Number</label><input class="rf-input" type="tel" placeholder="+1 (416) 000 0000" required></div>
+      </div>
+      <div class="rf-row">
+        <div class="rf-group"><label class="rf-label">Date</label><input class="rf-input" type="date" required></div>
+        <div class="rf-group"><label class="rf-label">Time</label>
+          <select class="rf-select">
+            <option value="">Select time</option>
+            <option>11:00 AM</option><option>12:00 PM</option><option>1:00 PM</option>
+            <option>2:00 PM</option><option>6:00 PM</option><option>7:00 PM</option>
+            <option>8:00 PM</option><option>9:00 PM</option><option>10:00 PM</option>
+          </select>
+        </div>
+      </div>
+      <div class="rf-row">
+        <div class="rf-group"><label class="rf-label">Number of Guests</label>
+          <select class="rf-select">
+            <option>1 Guest</option><option>2 Guests</option><option>3 Guests</option>
+            <option>4 Guests</option><option>5 Guests</option><option>6 Guests</option>
+            <option>7-10 Guests</option><option>10+ (Private Event)</option>
+          </select>
+        </div>
+        <div class="rf-group"><label class="rf-label">Occasion</label>
+          <select class="rf-select">
+            <option value="">Select occasion</option>
+            <option>Regular Dining</option><option>Birthday</option>
+            <option>Anniversary</option><option>Business Dinner</option>
+            <option>Proposal</option><option>Private Event</option>
+          </select>
+        </div>
+      </div>
+      <div class="rf-group"><label class="rf-label">Special Requests</label><textarea class="rf-textarea" placeholder="Dietary requirements, allergies, special arrangements..."></textarea></div>
+      <button type="submit" class="rf-submit" id="resBtn">Confirm Reservation →</button>
+      <div id="resMsg" style="margin-top:14px;font-size:13px;display:none;"></div>
+    </form>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <span style="font-size:24px;animation:flamePulse 2s ease-in-out infinite;">🔥</span>
+        <span style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--amber-light);">Ember & Thyme</span>
+      </div>
+      <div class="footer-tagline">"Every meal is a memory in the making."</div>
+    </div>
+    <div class="footer-links">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#menu">Menu</a>
+      <a href="#contact">Contact</a>
+      <a href="#reserve">Reservations</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 Ember & Thyme Restaurant. All rights reserved.</span>
+    <span>87 King Street West, Toronto, ON M5H 1S3</span>
+    <span><a href="#" style="color:var(--amber-light);text-decoration:none;">Privacy Policy</a></span>
+  </div>
+</footer>
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+// NAV
+function toggleMenu(){
+  document.getElementById('ham').classList.toggle('open');
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+function closeMenu(){
+  document.getElementById('ham').classList.remove('open');
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+
+// NAV SHRINK
+window.addEventListener('scroll',()=>{
+  const nav = document.getElementById('mainNav');
+  nav.style.background = window.scrollY > 80 ? 'rgba(28,28,28,0.98)' : 'rgba(28,28,28,0.94)';
+});
+
+// REVEAL
+const ro = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting) e.target.classList.add('visible');});
+},{threshold:0.12});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+
+// MENU FILTER
+function filterMenu(btn,cat){
+  document.querySelectorAll('.mtab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.mcard').forEach(card=>{
+    const show = cat==='all' || card.dataset.cat===cat;
+    card.style.display = show ? '' : 'none';
+  });
+}
+
+// OPEN/CLOSED STATUS - dynamically update ticker
+function getStatus(){
+  const now = new Date();
+  const day  = now.getDay(); // 0=Sun, 6=Sat
+  const hour = now.getHours();
+  const openDots  = document.querySelectorAll('.dot-open');
+  if(day===0){
+    // Sunday - closed
+    document.querySelectorAll('.t-open').forEach(el=>{
+      el.textContent='● CLOSED TODAY';
+      el.style.color='#FFB3B3';
+    });
+  } else if(hour>=11 && (day<6 ? hour<23 : hour<24)){
+    document.querySelectorAll('.t-open').forEach(el=>{
+      el.textContent='● OPEN NOW';
+      el.style.color='#7DFF6B';
+    });
+  } else {
+    document.querySelectorAll('.t-open').forEach(el=>{
+      el.textContent='● CURRENTLY CLOSED';
+      el.style.color='#FFB3B3';
+    });
+  }
+}
+getStatus();
+
+// RESERVATION FORM
+function submitReservation(e){
+  e.preventDefault();
+  const btn = document.getElementById('resBtn');
+  const msg = document.getElementById('resMsg');
+  btn.textContent='Sending...';
+  btn.disabled=true;btn.style.opacity='0.7';
+  setTimeout(()=>{
+    btn.textContent='Reservation Confirmed! ✓';
+    btn.style.background='linear-gradient(135deg,#1A5C1A,#2D7A2D)';
+    btn.style.opacity='1';btn.disabled=false;
+    msg.style.display='block';msg.style.color='#7DFF6B';
+    msg.textContent='🎉 Thank you! We\'ll send a confirmation to your phone within 10 minutes.';
+    e.target.reset();
+    setTimeout(()=>{
+      btn.textContent='Confirm Reservation →';
+      btn.style.background='';
+      msg.style.display='none';
+    },5000);
+  },1500);
+}
+</script>
+</body>
+</html>
