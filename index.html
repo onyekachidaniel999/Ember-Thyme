@@ -844,15 +844,18 @@ footer{
     <h2 class="section-title reveal">Reserve Your<br><em style="color:var(--amber-light);">Perfect Evening</em></h2>
     <div class="amber-line"></div>
     <p style="color:rgba(255,253,247,0.65);font-size:14px;line-height:1.8;margin-bottom:28px;" class="reveal rd1">Secure your table today. Walk-ins welcome but reservations get priority seating and our complimentary welcome amuse-bouche.</p>
-    <form class="res-form reveal rd1" onsubmit="submitReservation(event)">
+    <form class="res-form reveal rd1" id="reservationForm" onsubmit="submitReservation(event)">
+      <input type="hidden" name="access_key" value="aa6268f0-40f3-4556-8b4d-30e88be1403f">
+      <input type="hidden" name="subject" value="New Reservation Request - Ember & Thyme">
+      <input type="hidden" name="from_name" value="Ember & Thyme Website">
       <div class="rf-row">
-        <div class="rf-group"><label class="rf-label">Full Name</label><input class="rf-input" type="text" placeholder="Your full name" required></div>
-        <div class="rf-group"><label class="rf-label">Phone Number</label><input class="rf-input" type="tel" placeholder="+1 (416) 000 0000" required></div>
+        <div class="rf-group"><label class="rf-label">Full Name</label><input class="rf-input" type="text" name="name" placeholder="Your full name" required></div>
+        <div class="rf-group"><label class="rf-label">Phone Number</label><input class="rf-input" type="tel" name="phone" placeholder="+1 (416) 000 0000" required></div>
       </div>
       <div class="rf-row">
-        <div class="rf-group"><label class="rf-label">Date</label><input class="rf-input" type="date" required></div>
+        <div class="rf-group"><label class="rf-label">Date</label><input class="rf-input" type="date" name="date" required></div>
         <div class="rf-group"><label class="rf-label">Time</label>
-          <select class="rf-select">
+          <select class="rf-select" name="time">
             <option value="">Select time</option>
             <option>11:00 AM</option><option>12:00 PM</option><option>1:00 PM</option>
             <option>2:00 PM</option><option>6:00 PM</option><option>7:00 PM</option>
@@ -862,14 +865,14 @@ footer{
       </div>
       <div class="rf-row">
         <div class="rf-group"><label class="rf-label">Number of Guests</label>
-          <select class="rf-select">
+          <select class="rf-select" name="guests">
             <option>1 Guest</option><option>2 Guests</option><option>3 Guests</option>
             <option>4 Guests</option><option>5 Guests</option><option>6 Guests</option>
             <option>7-10 Guests</option><option>10+ (Private Event)</option>
           </select>
         </div>
         <div class="rf-group"><label class="rf-label">Occasion</label>
-          <select class="rf-select">
+          <select class="rf-select" name="occasion">
             <option value="">Select occasion</option>
             <option>Regular Dining</option><option>Birthday</option>
             <option>Anniversary</option><option>Business Dinner</option>
@@ -877,12 +880,22 @@ footer{
           </select>
         </div>
       </div>
-      <div class="rf-group"><label class="rf-label">Special Requests</label><textarea class="rf-textarea" placeholder="Dietary requirements, allergies, special arrangements..."></textarea></div>
+      <div class="rf-group"><label class="rf-label">Special Requests</label><textarea class="rf-textarea" name="message" placeholder="Dietary requirements, allergies, special arrangements..."></textarea></div>
+      <div class="h-captcha" data-captcha="true"></div>
       <button type="submit" class="rf-submit" id="resBtn">Confirm Reservation →</button>
       <div id="resMsg" style="margin-top:14px;font-size:13px;display:none;"></div>
     </form>
   </div>
 </section>
+
+<!-- ===== MAP ===== -->
+<div style="max-width:1100px;margin:0 auto;padding:0 32px 60px;">
+  <iframe
+    src="https://www.google.com/maps?q=87+King+Street+West,+Toronto,+ON+M5H+1S3&output=embed"
+    width="100%" height="380" style="border:0;border-radius:8px;filter:grayscale(0.3) contrast(1.1);display:block;"
+    allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+  </iframe>
+</div>
 
 <!-- ===== FOOTER ===== -->
 <footer>
@@ -972,24 +985,52 @@ getStatus();
 // RESERVATION FORM
 function submitReservation(e){
   e.preventDefault();
+  const form = e.target;
   const btn = document.getElementById('resBtn');
   const msg = document.getElementById('resMsg');
+
+  const hcaptchaField = form.querySelector('textarea[name="h-captcha-response"]');
+  if(!hcaptchaField || !hcaptchaField.value){
+    msg.style.display='block';msg.style.color='#FF6B6B';
+    msg.textContent='Please complete the captcha before submitting.';
+    return;
+  }
+
   btn.textContent='Sending...';
   btn.disabled=true;btn.style.opacity='0.7';
-  setTimeout(()=>{
-    btn.textContent='Reservation Confirmed! ✓';
-    btn.style.background='linear-gradient(135deg,#1A5C1A,#2D7A2D)';
-    btn.style.opacity='1';btn.disabled=false;
-    msg.style.display='block';msg.style.color='#7DFF6B';
-    msg.textContent='🎉 Thank you! We\'ll send a confirmation to your phone within 10 minutes.';
-    e.target.reset();
-    setTimeout(()=>{
-      btn.textContent='Confirm Reservation →';
-      btn.style.background='';
-      msg.style.display='none';
-    },5000);
-  },1500);
+  msg.style.display='none';
+
+  const formData = new FormData(form);
+  fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.success){
+      btn.textContent='Reservation Confirmed! ✓';
+      btn.style.background='linear-gradient(135deg,#1A5C1A,#2D7A2D)';
+      btn.style.opacity='1';btn.disabled=false;
+      msg.style.display='block';msg.style.color='#7DFF6B';
+      msg.textContent='🎉 Thank you! We\'ll send a confirmation to your phone within 10 minutes.';
+      form.reset();
+      setTimeout(()=>{
+        btn.textContent='Confirm Reservation →';
+        btn.style.background='';
+        msg.style.display='none';
+      },5000);
+    } else {
+      throw new Error(data.message || 'Submission failed');
+    }
+  })
+  .catch(() => {
+    btn.textContent='Confirm Reservation →';
+    btn.disabled=false;btn.style.opacity='1';
+    msg.style.display='block';msg.style.color='#FF6B6B';
+    msg.textContent='Something went wrong. Please try again or call us directly.';
+  });
 }
 </script>
+<script src="https://web3forms.com/client/script.js" async defer></script>
 </body>
 </html>
