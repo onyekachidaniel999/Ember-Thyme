@@ -995,6 +995,9 @@ function submitReservation(e){
   msg.style.display='none';
 
   const formData = new FormData(form);
+  const name = formData.get('name') || '';
+  const email = formData.get('email') || '';
+
   fetch('https://api.web3forms.com/submit', {
     method: 'POST',
     body: formData
@@ -1002,11 +1005,19 @@ function submitReservation(e){
   .then(res => res.json())
   .then(data => {
     if(data.success){
+      // Fire auto-reply via Brevo
+      if(email) {
+        fetch('/api/send-reply', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email })
+        }).catch(() => {}); // fail silently, don't block UX
+      }
       btn.textContent='Reservation Confirmed! ✓';
       btn.style.background='linear-gradient(135deg,#1A5C1A,#2D7A2D)';
       btn.style.opacity='1';btn.disabled=false;
       msg.style.display='block';msg.style.color='#7DFF6B';
-      msg.textContent='🎉 Thank you! We\'ll send a confirmation to your phone within 10 minutes.';
+      msg.textContent='🎉 Thank you! We\'ll get back to you within 6 hours. For urgent reservations, please call us directly.';
       form.reset();
       setTimeout(()=>{
         btn.textContent='Confirm Reservation →';
