@@ -1011,7 +1011,10 @@ function submitReservation(e){
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email })
-        }).catch(() => {}); // fail silently, don't block UX
+        })
+        .then(r => r.json())
+        .then(d => console.log('Auto-reply result:', JSON.stringify(d)))
+        .catch(e => console.error('Auto-reply error:', e));
       }
       btn.textContent='Reservation Confirmed! ✓';
       btn.style.background='linear-gradient(135deg,#1A5C1A,#2D7A2D)';
