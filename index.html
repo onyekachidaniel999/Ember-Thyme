@@ -964,7 +964,66 @@ footer{
   </div>
 </section>
 
-<!-- ===== FOOTER ===== -->
+<!-- ===== BLOG ===== -->
+<style>
+.blog{background:#0d0d0d;padding:100px 0;}
+.blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;max-width:1200px;margin:48px auto 0;padding:0 24px;}
+.blog-card{background:#1a1a1a;border-radius:16px;overflow:hidden;border:1px solid rgba(243,156,18,0.1);transition:transform .3s,border-color .3s;cursor:pointer;}
+.blog-card:hover{transform:translateY(-6px);border-color:rgba(243,156,18,0.4);}
+.blog-img{width:100%;height:200px;object-fit:cover;display:block;transition:transform .4s;}
+.blog-card:hover .blog-img{transform:scale(1.05);}
+.blog-img-wrap{overflow:hidden;position:relative;}
+.blog-tag{position:absolute;top:14px;left:14px;background:var(--ember);color:#fff;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 12px;border-radius:100px;}
+.blog-body{padding:24px;}
+.blog-meta{font-size:11px;color:var(--amber-light);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;}
+.blog-title{font-family:'Playfair Display',serif;font-size:18px;color:#fffdf7;line-height:1.4;margin:0 0 12px;}
+.blog-excerpt{font-size:13px;color:rgba(255,253,247,0.55);line-height:1.7;margin:0 0 18px;}
+.blog-read{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--amber-light);text-decoration:none;display:flex;align-items:center;gap:6px;transition:gap .2s;}
+.blog-read:hover{gap:10px;}
+@media(max-width:900px){.blog-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:580px){.blog-grid{grid-template-columns:1fr;}}
+</style>
+
+<section class="blog">
+  <div style="text-align:center;padding:0 24px;">
+    <span class="section-label">From Our Kitchen</span>
+    <h2 class="section-title reveal">Stories, Recipes &<br><em style="color:var(--amber-light);">Fine Dining Insights</em></h2>
+    <p style="color:rgba(255,253,247,0.55);font-size:15px;max-width:520px;margin:16px auto 0;line-height:1.8;">Behind every great meal is a great story. Explore our world of flavours, techniques, and Toronto's finest dining culture.</p>
+  </div>
+
+  <div class="blog-grid">
+
+    <!-- Post 1 -->
+    <div class="blog-card reveal rd1">
+      <div class="blog-img-wrap">
+        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=700&h=400&fit=crop&q=80" alt="Fine Dining Toronto" class="blog-img">
+        <span class="blog-tag">Fine Dining</span>
+      </div>
+      <div class="blog-body">
+        <div class="blog-meta">July 5, 2026 &nbsp;·&nbsp; 4 min read</div>
+        <h3 class="blog-title">Why Toronto's King Street West is the Heartbeat of Fine Dining</h3>
+        <p class="blog-excerpt">From intimate bistros to world-class tasting menus, discover why King Street West has become Canada's most exciting dining destination — and what makes Ember & Thyme stand apart.</p>
+        <a href="blog-1.html" class="blog-read">Read More →</a>
+    <div class="blog-card reveal rd2">
+      <div class="blog-img-wrap">
+        <img src="https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=700&h=400&fit=crop&q=80" alt="Handmade Pasta" class="blog-img">
+        <span class="blog-tag">Behind the Kitchen</span>
+      </div>
+      <div class="blog-body">
+        <div class="blog-meta">June 28, 2026 &nbsp;·&nbsp; 5 min read</div>
+        <h3 class="blog-title">The Art of Handmade Pasta: Why We Refuse to Cut Corners</h3>
+        <p class="blog-excerpt">Our pasta is made fresh every morning — no shortcuts, no machines, just flour, eggs, and decades of craft. Our head chef takes you inside the process that makes every bite unforgettable.</p>
+        <a href="blog-2.html" class="blog-read">Read More →</a>
+    <div class="blog-card reveal rd3">
+      <div class="blog-img-wrap">
+        <img src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=700&h=400&fit=crop&q=80" alt="Wine Pairing" class="blog-img">
+        <span class="blog-tag">Wine & Spirits</span>
+      </div>
+      <div class="blog-body">
+        <div class="blog-meta">June 18, 2026 &nbsp;·&nbsp; 6 min read</div>
+        <h3 class="blog-title">The Perfect Wine Pairing for a Wood-Fired Dinner — A Beginner's Guide</h3>
+        <p class="blog-excerpt">Smoky, bold, and rich — wood-fired dishes demand wines that can hold their own. Our sommelier breaks down the perfect bottles to elevate your next visit to Ember & Thyme.</p>
+        <a href="blog-3.html" class="blog-read">Read More →</a>
 <footer>
   <div class="footer-top">
     <div>
