@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us | Ember & Thyme Fine Dining Toronto</title>
+<meta name="description" content="Discover the story behind Ember & Thyme — Toronto's premier wood-fired fine dining restaurant on King Street West. Meet our team, our philosophy, and our passion.">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --fire:#C0392B; --fire-light:#E74C3C; --fire-dark:#922B21;
+  --amber:#D4870A; --amber-light:#F39C12; --amber-pale:#FDF0D5;
+  --cream:#FAF3E0; --cream-dark:#F0E6CC;
+  --charcoal:#1C1C1C; --charcoal-mid:#2D2D2D; --charcoal-soft:#3D3D3D;
+  --herb:#2D5A27; --herb-light:#3D7A35;
+  --white:#FFFDF7;
+  --nav-h:70px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--charcoal);color:var(--white);font-family:'Raleway',sans-serif;overflow-x:hidden;}
+
+/* ===== HOURS TICKER ===== */
+.hours-ticker {
+  background:var(--fire-dark);
+  padding:9px 0;
+  overflow:hidden;
+  white-space:nowrap;
+  position:relative;
+  z-index:1001;
+}
+.hours-ticker-inner {
+  display:inline-flex;
+  gap:60px;
+  animation:ticker 28s linear infinite;
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--amber-pale);
+}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.t-sep{color:var(--amber-light);margin:0 10px;}
+.t-open{color:#7DFF6B;font-weight:700;}
+.t-closed{color:#FFB3B3;}
+
+/* ===== NAV ===== */
+nav{
+  position:fixed;top:36px;width:100%;z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 clamp(20px,5vw,64px);height:var(--nav-h);
+  background:rgba(28,28,28,0.94);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(212,135,10,0.2);
+  transition:all 0.3s;
+}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.logo-flame{font-size:28px;animation:flamePulse 2s ease-in-out infinite;}
+@keyframes flamePulse{0%,100%{transform:scale(1) rotate(-3deg)}50%{transform:scale(1.1) rotate(3deg)}}
+.logo-text{display:flex;flex-direction:column;line-height:1.1;}
+.logo-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--amber-light);letter-spacing:1px;}
+.logo-tagline{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:rgba(243,156,18,0.65);}
+
+.nav-links{display:flex;align-items:center;gap:30px;list-style:none;}
+.nav-links a{text-decoration:none;color:rgba(255,253,247,0.78);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;transition:color 0.3s;position:relative;}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--amber-light);transition:width 0.3s;}
+.nav-links a:hover{color:var(--amber-light);}
+.nav-links a:hover::after{width:100%;}
+.nav-reserve{background:var(--fire);color:var(--white)!important;padding:10px 22px;font-weight:700!important;letter-spacing:1px!important;transition:background 0.3s!important;}
+.nav-reserve::after{display:none!important;}
+.nav-reserve:hover{background:var(--fire-light)!important;}
+
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;}
+.hamburger span{display:block;width:24px;height:2px;background:var(--amber-light);transition:all 0.3s;}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mobile-menu{display:none;position:fixed;top:106px;left:0;width:100%;background:rgba(28,28,28,0.98);backdrop-filter:blur(14px);padding:16px 0;z-index:999;flex-direction:column;border-bottom:1px solid rgba(212,135,10,0.2);}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{display:block;padding:15px 32px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,253,247,0.8);text-decoration:none;border-bottom:1px solid rgba(212,135,10,0.08);transition:color 0.3s;}
+.mobile-menu a:hover{color:var(--amber-light);}
+.mobile-menu .m-reserve{background:var(--fire);color:var(--white)!important;margin:12px 32px 4px;text-align:center;font-weight:700;}
+
+/* ===== HERO ===== */
+.hero{
+  height:100vh;min-height:600px;
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;
+  padding-top:106px;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1800&q=80') center/cover;
+  animation:heroZoom 14s ease-in-out infinite alternate;
+}
+@keyframes heroZoom{from{transform:scale(1)}to{transform:scale(1.06)}}
+.hero-ov{
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(28,28,28,0.92) 0%,rgba(192,57,43,0.25) 50%,rgba(28,28,28,0.85) 100%);
+}
+/* Animated fire glow */
+.hero-glow{
+  position:absolute;bottom:-80px;left:50%;transform:translateX(-50%);
+  width:600px;height:300px;
+  background:radial-gradient(ellipse,rgba(192,57,43,0.35) 0%,transparent 70%);
+  animation:glowPulse 3s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes glowPulse{0%,100%{opacity:0.6;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.15)}}
+
+.hero-content{position:relative;z-index:10;padding:0 clamp(20px,6vw,80px);max-width:900px;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:10px;margin-bottom:22px;animation:fadeUp 0.9s ease 0.3s both;}
+.hero-eyebrow span{font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--amber-light);font-weight:600;}
+.eyebrow-line{width:40px;height:1px;background:var(--amber-light);}
+
+.hero-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(48px,8vw,96px);
+  font-weight:900;line-height:0.95;
+  color:var(--white);
+  margin-bottom:26px;
+  animation:fadeUp 0.9s ease 0.5s both;
+}
+.hero-title em{color:var(--amber-light);font-style:italic;}
+.hero-title .fire-word{
+  display:inline-block;
+  background:linear-gradient(135deg,var(--fire-light),var(--amber-light));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+.hero-desc{
+  font-size:clamp(14px,1.8vw,17px);font-weight:300;
+  color:rgba(255,253,247,0.75);line-height:1.85;
+  max-width:520px;margin-bottom:44px;
+  animation:fadeUp 0.9s ease 0.7s both;
+}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap;animation:fadeUp 0.9s ease 0.9s both;}
+
+.btn-fire{
+  background:linear-gradient(135deg,var(--fire),var(--fire-light));
+  color:var(--white);padding:16px 40px;
+  font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  text-decoration:none;border:none;cursor:pointer;
+  font-family:'Raleway',sans-serif;
+  transition:all 0.3s;display:inline-block;
+  box-shadow:0 4px 20px rgba(192,57,43,0.4);
+}
+.btn-fire:hover{background:linear-gradient(135deg,var(--fire-light),var(--amber));transform:translateY(-3px);box-shadow:0 8px 28px rgba(192,57,43,0.5);}
+.btn-outline-warm{
+  border:1px solid rgba(212,135,10,0.6);color:var(--amber-light);
+  padding:16px 40px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;
+  text-decoration:none;transition:all 0.3s;display:inline-block;
+}
+.btn-outline-warm:hover{border-color:var(--amber-light);background:rgba(212,135,10,0.12);}
+
+.hero-badges{
+  position:absolute;bottom:clamp(30px,5vw,50px);right:clamp(20px,5vw,60px);
+  display:flex;gap:clamp(16px,3vw,32px);z-index:10;
+  animation:fadeUp 0.9s ease 1.1s both;
+}
+.hbadge{text-align:center;}
+.hbadge-num{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,42px);font-weight:700;color:var(--amber-light);line-height:1;}
+.hbadge-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,253,247,0.55);margin-top:4px;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== SHARED ===== */
+.section-label{font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--amber);margin-bottom:14px;display:block;}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(32px,4vw,52px);font-weight:700;line-height:1.15;color:var(--white);}
+.amber-line{width:56px;height:2px;background:linear-gradient(90deg,var(--fire),var(--amber-light));margin:20px 0;}
+.reveal{opacity:0;transform:translateY(36px);transition:opacity 0.8s ease,transform 0.8s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.rd1{transition-delay:0.12s;}.rd2{transition-delay:0.24s;}.rd3{transition-delay:0.36s;}
+
+/* ===== ABOUT STRIP ===== */
+.about-strip{
+  background:var(--charcoal-mid);
+  padding:clamp(60px,8vw,100px) clamp(20px,6vw,80px);
+  display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,6vw,80px);
+  align-items:center;
+}
+.about-img-wrap{position:relative;height:clamp(320px,45vw,520px);}
+.about-img-main{
+  position:absolute;top:0;left:0;width:72%;height:82%;
+  background:url('https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=800&q=80') center/cover;
+  animation:floatY 6s ease-in-out infinite;
+}
+.about-img-accent{
+  position:absolute;bottom:0;right:0;width:52%;height:52%;
+  background:url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80') center/cover;
+  border:5px solid var(--charcoal-mid);
+  animation:floatY 6s ease-in-out infinite reverse;
+}
+.about-award{
+  position:absolute;top:48%;left:52%;transform:translate(-50%,-50%);
+  background:linear-gradient(135deg,var(--fire-dark),var(--fire));
+  color:var(--white);width:100px;height:100px;border-radius:50%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;z-index:10;
+  box-shadow:0 8px 24px rgba(192,57,43,0.5);
+}
+.about-award .aw-num{font-size:26px;font-weight:700;line-height:1;}
+.about-award .aw-txt{font-size:8px;letter-spacing:1px;font-weight:600;text-align:center;}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+
+.about-body{color:rgba(255,253,247,0.7);line-height:1.9;font-size:15px;margin-bottom:22px;}
+.about-perks{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:32px;}
+.perk{display:flex;align-items:flex-start;gap:10px;}
+.perk-icon{font-size:18px;flex-shrink:0;margin-top:2px;}
+.perk-text h4{font-size:12px;font-weight:700;color:var(--amber-light);letter-spacing:1px;margin-bottom:2px;}
+.perk-text p{font-size:11px;color:rgba(255,253,247,0.55);}
+
+/* ===== MENU SECTION ===== */
+.menu-section{
+  padding:clamp(60px,8vw,100px) clamp(20px,6vw,80px);
+  background:var(--charcoal);
+}
+.menu-header{text-align:center;margin-bottom:clamp(40px,6vw,64px);}
+.menu-tabs{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:28px;}
+.mtab{
+  background:transparent;border:1px solid rgba(212,135,10,0.3);
+  color:rgba(255,253,247,0.65);padding:9px 22px;
+  font-family:'Raleway',sans-serif;font-size:10px;font-weight:600;
+  letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;
+}
+.mtab:hover,.mtab.active{background:var(--fire);border-color:var(--fire);color:var(--white);}
+
+.menu-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:2px;
+  margin-top:8px;
+}
+
+/* MENU CARD */
+.mcard{
+  position:relative;overflow:hidden;cursor:pointer;
+  height:clamp(220px,25vw,300px);
+  background:var(--charcoal-soft);
+}
+.mcard-img{
+  position:absolute;inset:0;
+  background-size:cover;background-position:center;
+  transition:transform 0.7s ease;
+}
+.mcard:hover .mcard-img{transform:scale(1.1);}
+.mcard-dark{position:absolute;inset:0;background:linear-gradient(to top,rgba(28,28,28,0.97) 0%,rgba(28,28,28,0.5) 50%,transparent 100%);}
+
+/* Default info (always visible) */
+.mcard-base{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:clamp(16px,2.5vw,24px);
+  transform:translateY(0);transition:transform 0.4s ease;
+}
+/* Hover overlay (slides up with full details) */
+.mcard-hover{
+  position:absolute;inset:0;
+  padding:clamp(20px,3vw,30px);
+  display:flex;flex-direction:column;justify-content:center;
+  background:linear-gradient(135deg,rgba(192,57,43,0.92),rgba(28,28,28,0.95));
+  transform:translateY(100%);
+  transition:transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.mcard:hover .mcard-base{transform:translateY(60px);opacity:0;}
+.mcard:hover .mcard-hover{transform:translateY(0);}
+
+.mcard-tag{
+  display:inline-block;background:var(--amber);color:var(--charcoal);
+  font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  padding:3px 10px;margin-bottom:8px;
+}
+.mcard-name{font-family:'Playfair Display',serif;font-size:clamp(18px,2.5vw,24px);font-weight:700;color:var(--white);margin-bottom:4px;}
+.mcard-price{font-family:'Playfair Display',serif;font-size:clamp(18px,2.2vw,22px);font-weight:600;color:var(--amber-light);}
+
+.mcard-hover-name{font-family:'Playfair Display',serif;font-size:clamp(20px,2.8vw,28px);font-weight:700;color:var(--white);margin-bottom:8px;}
+.mcard-hover-desc{font-size:13px;color:rgba(255,253,247,0.82);line-height:1.7;margin-bottom:14px;}
+.mcard-hover-price{font-family:'Playfair Display',serif;font-size:clamp(22px,2.8vw,30px);font-weight:700;color:var(--amber-light);margin-bottom:6px;}
+.mcard-varieties{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.variety-tag{border:1px solid rgba(243,156,18,0.5);color:var(--amber-light);font-size:9px;letter-spacing:1px;padding:3px 10px;text-transform:uppercase;}
+
+/* Featured card — full width */
+.mcard-feat{grid-column:span 2;height:clamp(200px,22vw,260px);}
+
+/* Food images */
+.fi1{background-image:url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=900&q=80');}
+.fi2{background-image:url('https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=900&q=80');}
+.fi3{background-image:url('https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=900&q=80');}
+.fi4{background-image:url('https://images.unsplash.com/photo-1513104890138-7c749659a591?w=900&q=80');} /* Wood-Fired Pizza */
+.fi5{background-image:url('https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=900&q=80');}
+.fi6{background-image:url('https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=900&q=80');} /* Salmon */
+.fi7{background-image:url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=900&q=80');}
+.fi8{background-image:url('https://images.unsplash.com/photo-1529042410759-befb1204b468?w=900&q=80');}
+.fi9{background-image:url('https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=900&q=80');} /* Handmade Pasta */
+.fi10{background-image:url('https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=900&q=80');}
+
+/* ===== EXPERIENCE BAND ===== */
+.exp-band{
+  background:url('https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=1800&q=80') center/cover fixed;
+  position:relative;padding:clamp(70px,10vw,120px) clamp(20px,6vw,80px);
+  text-align:center;
+}
+.exp-band::before{content:'';position:absolute;inset:0;background:rgba(28,28,28,0.88);}
+.exp-inner{position:relative;z-index:2;max-width:680px;margin:0 auto;}
+.exp-inner h2{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,58px);font-weight:700;color:var(--white);margin-bottom:18px;line-height:1.15;}
+.exp-inner h2 em{color:var(--amber-light);font-style:italic;}
+.exp-inner p{color:rgba(255,253,247,0.72);font-size:16px;line-height:1.8;margin-bottom:36px;}
+.exp-stats{display:flex;justify-content:center;gap:clamp(24px,5vw,60px);margin-bottom:40px;flex-wrap:wrap;}
+.estat{text-align:center;}
+.estat-num{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,48px);font-weight:700;color:var(--amber-light);line-height:1;}
+.estat-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,253,247,0.55);margin-top:5px;}
+
+/* ===== HOURS & CONTACT ===== */
+.hours-contact{
+  display:grid;grid-template-columns:1fr 1fr;
+  background:var(--charcoal-mid);
+}
+.hc-col{padding:clamp(50px,7vw,90px) clamp(24px,5vw,70px);}
+.hc-col:first-child{border-right:1px solid rgba(212,135,10,0.12);}
+
+.hours-list{margin-top:28px;display:flex;flex-direction:column;gap:14px;}
+.hrow{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid rgba(212,135,10,0.08);}
+.hrow:last-child{border-bottom:none;}
+.hrow-day{font-size:13px;font-weight:600;color:rgba(255,253,247,0.85);letter-spacing:1px;}
+.hrow-time{font-size:12px;color:var(--amber-light);font-weight:600;}
+.hrow-time.closed{color:rgba(255,100,100,0.8);}
+.hrow-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.dot-open{background:#7DFF6B;box-shadow:0 0 8px #7DFF6B;animation:dotPulse 1.5s ease-in-out infinite;}
+.dot-closed{background:rgba(255,100,100,0.6);}
+@keyframes dotPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.7)}}
+
+.contact-items{margin-top:28px;display:flex;flex-direction:column;gap:22px;}
+.c-row{display:flex;gap:18px;align-items:flex-start;}
+.c-icon-box{
+  width:46px;height:46px;flex-shrink:0;
+  background:rgba(192,57,43,0.15);border:1px solid rgba(192,57,43,0.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+}
+.c-lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--amber);margin-bottom:4px;}
+.c-val{font-size:13px;color:rgba(255,253,247,0.8);line-height:1.6;}
+.c-val a{color:var(--amber-light);text-decoration:none;}
+
+/* ===== RESERVATION SECTION ===== */
+.reservation{
+  padding:clamp(60px,8vw,100px) clamp(20px,6vw,80px);
+  background:var(--charcoal);
+  display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,6vw,80px);
+  align-items:center;
+}
+.res-img{
+  height:clamp(320px,42vw,520px);
+  background:url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80') center/cover;
+  position:relative;
+}
+.res-img::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(192,57,43,0.3),transparent);
+}
+.res-form{display:flex;flex-direction:column;gap:18px;}
+.rf-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.rf-group{display:flex;flex-direction:column;gap:7px;}
+.rf-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(212,135,10,0.8);}
+.rf-input,.rf-select,.rf-textarea{
+  background:rgba(255,255,255,0.05);border:1px solid rgba(212,135,10,0.2);
+  color:var(--white);padding:13px 16px;
+  font-family:'Raleway',sans-serif;font-size:13px;
+  transition:border-color 0.3s;outline:none;width:100%;
+}
+.rf-input:focus,.rf-select:focus,.rf-textarea:focus{border-color:var(--amber);background:rgba(212,135,10,0.05);}
+.rf-select option{background:var(--charcoal-mid);}
+.rf-textarea{min-height:100px;resize:vertical;}
+.rf-submit{
+  background:linear-gradient(135deg,var(--fire),var(--fire-light));
+  color:var(--white);border:none;cursor:pointer;
+  padding:16px 40px;font-family:'Raleway',sans-serif;
+  font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  transition:all 0.3s;align-self:flex-start;
+  box-shadow:0 4px 20px rgba(192,57,43,0.35);
+}
+.rf-submit:hover{background:linear-gradient(135deg,var(--fire-light),var(--amber));transform:translateY(-2px);box-shadow:0 8px 28px rgba(192,57,43,0.5);}
+
+/* ===== FOOTER ===== */
+footer{
+  background:var(--charcoal-mid);
+  border-top:1px solid rgba(212,135,10,0.12);
+  padding:clamp(40px,6vw,60px) clamp(20px,6vw,80px) 24px;
+}
+.footer-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:24px;margin-bottom:32px;}
+.footer-tagline{font-family:'Playfair Display',serif;font-size:clamp(20px,3vw,28px);font-style:italic;color:var(--amber-light);}
+.footer-links{display:flex;gap:24px;flex-wrap:wrap;}
+.footer-links a{text-decoration:none;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,253,247,0.55);transition:color 0.3s;}
+.footer-links a:hover{color:var(--amber-light);}
+.footer-bottom{border-top:1px solid rgba(212,135,10,0.08);padding-top:20px;display:flex;align-items:center;justify-content:space-between;font-size:11px;color:rgba(255,253,247,0.35);flex-wrap:wrap;gap:10px;}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1024px){
+  .about-strip,.reservation{grid-template-columns:1fr;}
+  .about-img-wrap{height:clamp(280px,55vw,400px);}
+  .hours-contact{grid-template-columns:1fr;}
+  .hc-col:first-child{border-right:none;border-bottom:1px solid rgba(212,135,10,0.12);}
+  .menu-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:768px){
+  nav{padding:0 20px;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .hero-badges{display:none;}
+  .menu-grid{grid-template-columns:1fr;}
+  .mcard-feat{grid-column:span 1;}
+  .rf-row{grid-template-columns:1fr;}
+  .about-perks{grid-template-columns:1fr;}
+  .footer-top{flex-direction:column;text-align:center;}
+  .footer-bottom{flex-direction:column;text-align:center;}
+  .exp-stats{gap:24px;}
+
+  /* Fix menu card height on mobile so content fits */
+  .mcard{height:280px;}
+  .mcard-feat{height:260px;}
+  .mcard-hover{padding:18px;justify-content:flex-start;padding-top:22px;}
+  .mcard-hover-name{font-size:17px;margin-bottom:6px;}
+  .mcard-hover-desc{font-size:12px;line-height:1.6;margin-bottom:10px;}
+  .mcard-hover-price{font-size:18px;margin-bottom:4px;}
+  .mcard-varieties{gap:4px;margin-top:6px;}
+  .variety-tag{font-size:8px;padding:3px 8px;}
+  .mcard-base{padding:14px;}
+  .mcard-name{font-size:16px;}
+  .mcard-price{font-size:15px;}
+
+  /* Better section padding on tablet/mobile */
+  .about-strip{padding:56px 24px;}
+  .exp-band{padding:64px 24px;}
+  .hc-col{padding:40px 24px;}
+  .reservation{padding:56px 24px;}
+  .menu-section{padding:56px 24px;}
+
+  /* Prevent text from touching border lines */
+  .hrow{padding-bottom:14px;padding-top:4px;}
+  .hc-col:first-child{border-right:none;border-bottom:1px solid rgba(212,135,10,0.12);padding-bottom:40px;}
+  .hc-col:last-child{padding-top:40px;}
+
+  /* Buttons breathing room */
+  .btn-fire,.btn-outline-warm{padding:14px 28px;}
+  .res-submit{margin-top:8px;}
+
+  /* Footer spacing */
+  .footer-links{justify-content:center;}
+  .footer-top{gap:20px;padding-bottom:8px;}
+}
+@media(max-width:480px){
+  .hero-btns{flex-direction:column;}
+  .btn-fire,.btn-outline-warm{text-align:center;width:100%;}
+  .menu-tabs{gap:6px;}
+  .mtab{padding:8px 14px;font-size:9px;}
+
+  /* Section spacing on mobile */
+  .about-strip{padding:48px 20px;}
+  .about-body{font-size:14px;}
+  .about-perks{gap:10px;}
+
+  /* Menu section */
+  .menu-header{margin-bottom:28px;}
+  .mcard-body{padding:16px;}
+  .mcard-title{font-size:15px;}
+
+  /* Experience band */
+  .exp-band{padding:56px 20px;}
+  .exp-stats{gap:20px;}
+  .exp-stat-num{font-size:28px;}
+  .exp-inner p{font-size:14px;}
+
+  /* Hours & Contact */
+  .hc-col{padding:36px 20px;}
+  .hrow{padding-bottom:12px;gap:8px;}
+  .hrow .day{font-size:13px;}
+  .hrow .time{font-size:13px;}
+
+  /* Contact info items */
+  .ci-item{margin-bottom:18px;gap:12px;}
+  .ci-icon{width:36px;height:36px;font-size:14px;flex-shrink:0;}
+  .ci-text{font-size:13px;line-height:1.5;}
+
+  /* Reservation form */
+  .reservation{padding:48px 20px;}
+  .rf-row{gap:12px;}
+  .res-input,.res-select,.res-textarea{font-size:14px;padding:12px 14px;}
+  .res-label{font-size:10px;}
+  .res-submit{padding:14px;font-size:12px;}
+
+  /* Section titles */
+  .section-title{font-size:clamp(26px,7vw,36px);}
+  .section-label{font-size:9px;letter-spacing:3px;}
+
+  /* Float buttons */
+  .float-wa{width:44px;height:44px;font-size:20px;bottom:16px;left:12px;}
+  .float-call{font-size:11px;padding:10px 14px;bottom:16px;right:12px;}
+
+  /* Footer */
+  .footer-links{gap:16px;justify-content:center;}
+  .footer-links a{font-size:10px;}
+  .footer-bottom{gap:8px;font-size:10px;}
+
+  /* Hours ticker */
+  .hours-ticker{font-size:11px;}
+
+  /* Divider spacing */
+  .sec-divider{margin:0;}
+  section, .about-strip, .exp-band, .hours-contact, .reservation{
+    border-top: none;
+  }
+  
+  /* Ensure content never touches divider lines */
+  .about-strip > *, .exp-inner > *, .hc-col > *, .reservation > *{
+    margin-bottom: 16px;
+  }
+}
+</style>
+/* ===== ABOUT PAGE STYLES ===== */
+.page-hero{
+  height:65vh;min-height:420px;position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  padding-top:106px;
+}
+.page-hero-bg{
+  position:absolute;inset:0;
+  background:url('https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=1800&q=80') center/cover;
+}
+.page-hero-ov{position:absolute;inset:0;background:linear-gradient(135deg,rgba(28,28,28,0.9),rgba(192,57,43,0.3),rgba(28,28,28,0.88));}
+.page-hero-content{position:relative;z-index:2;padding:0 24px;}
+.page-hero-label{font-size:10px;letter-spacing:6px;text-transform:uppercase;color:var(--amber-light);margin-bottom:16px;display:block;}
+.page-hero-title{font-family:'Playfair Display',serif;font-size:clamp(36px,6vw,72px);font-weight:700;color:var(--white);line-height:1.1;}
+.page-hero-title em{color:var(--amber-light);font-style:italic;}
+.page-hero-sub{font-size:16px;color:rgba(255,253,247,0.7);margin-top:20px;max-width:560px;line-height:1.7;}
+
+/* Story section */
+.story{padding:clamp(60px,8vw,100px) clamp(20px,6vw,80px);display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,6vw,80px);align-items:center;}
+.story-img{position:relative;}
+.story-img img{width:100%;height:520px;object-fit:cover;border-radius:4px;}
+.story-img-accent{position:absolute;bottom:-24px;right:-24px;width:200px;height:200px;object-fit:cover;border:4px solid var(--charcoal);border-radius:4px;}
+.story-award{position:absolute;top:24px;left:-20px;background:var(--fire);color:#fff;padding:16px 20px;text-align:center;border-radius:4px;box-shadow:0 8px 24px rgba(192,57,43,0.4);}
+.story-award-num{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;display:block;}
+.story-award-txt{font-size:8px;letter-spacing:2px;text-transform:uppercase;}
+.story-body p{font-size:15px;line-height:1.9;color:rgba(255,253,247,0.72);margin-bottom:20px;}
+.story-body h2{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,44px);color:var(--white);margin-bottom:24px;line-height:1.2;}
+.story-body h2 em{color:var(--amber-light);font-style:italic;}
+.story-sig{font-family:'Playfair Display',serif;font-size:22px;font-style:italic;color:var(--amber-light);margin-top:8px;}
+.story-sig-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,253,247,0.45);margin-top:4px;}
+
+/* Values */
+.values{background:#141414;padding:clamp(60px,8vw,100px) clamp(20px,6vw,80px);text-align:center;}
+.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:56px;}
+.value-card{background:#1a1a1a;border:1px solid rgba(243,156,18,0.1);border-radius:12px;padding:40px 28px;transition:border-color .3s,transform .3s;}
+.value-card:hover{border-color:rgba(243,156,18,0.4);transform:translateY(-4px);}
+.value-icon{font-size:36px;margin-bottom:16px;}
+.value-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--white);margin-bottom:12px;}
+.value-desc{font-size:14px;color:rgba(255,253,247,0.6);line-height:1.8;}
+
+/* Team */
+.team{padding:clamp(60px,8vw,100px) clamp(20px,6vw,80px);}
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:56px;}
+.team-card{position:relative;overflow:hidden;border-radius:8px;}
+.team-card img{width:100%;height:380px;object-fit:cover;transition:transform .5s;display:block;}
+.team-card:hover img{transform:scale(1.05);}
+.team-overlay{position:absolute;bottom:0;left:0;right:0;padding:28px 24px;background:linear-gradient(to top,rgba(28,28,28,0.97) 0%,transparent 100%);}
+.team-name{font-family:'Playfair Display',serif;font-size:20px;color:var(--white);margin-bottom:4px;}
+.team-role{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--amber-light);margin-bottom:8px;}
+.team-bio{font-size:13px;color:rgba(255,253,247,0.65);line-height:1.6;}
+
+/* Stats bar */
+.stats-bar{background:var(--fire-dark);padding:48px clamp(20px,6vw,80px);}
+.stats-inner{display:flex;justify-content:space-around;align-items:center;flex-wrap:wrap;gap:32px;max-width:900px;margin:0 auto;}
+.stat-item{text-align:center;}
+.stat-num{font-family:'Playfair Display',serif;font-size:clamp(36px,5vw,56px);font-weight:700;color:var(--amber-light);}
+.stat-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,253,247,0.65);margin-top:4px;}
+
+/* CTA band */
+.about-cta{background:#111;padding:clamp(60px,8vw,100px) clamp(20px,6vw,80px);text-align:center;}
+.about-cta h2{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,48px);color:var(--white);margin-bottom:16px;}
+.about-cta h2 em{color:var(--amber-light);font-style:italic;}
+.about-cta p{color:rgba(255,253,247,0.65);font-size:16px;max-width:520px;margin:0 auto 36px;line-height:1.8;}
+.btn-fire{display:inline-block;background:var(--fire);color:#fff;padding:16px 40px;text-decoration:none;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;transition:background .3s;}
+.btn-fire:hover{background:var(--fire-light);}
+
+@media(max-width:900px){
+  .story{grid-template-columns:1fr;}
+  .story-img-accent{display:none;}
+  .story-award{top:16px;left:16px;}
+  .values-grid{grid-template-columns:1fr 1fr;}
+  .team-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:600px){
+  .values-grid{grid-template-columns:1fr;}
+  .team-grid{grid-template-columns:1fr;}
+  .stats-inner{gap:24px;}
+  .page-hero{height:55vh;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HOURS TICKER ===== -->
+<div class="hours-ticker">
+  <div class="hours-ticker-inner">
+    <span>🔥 Ember &amp; Thyme</span>
+    <span class="t-sep">|</span>
+    <span class="t-open">● OPEN NOW</span>
+    <span class="t-sep">|</span>
+    <span>Mon – Fri: 11:00 AM – 11:00 PM</span>
+    <span class="t-sep">✦</span>
+    <span>Sat – Sun: 10:00 AM – 12:00 AM</span>
+    <span class="t-sep">|</span>
+    <span>📍 87 King Street West, Toronto, ON M5H 1S3</span>
+    <span class="t-sep">✦</span>
+    <span>📞 Reservations: +1 (416) 555 0192</span>
+    <span class="t-sep">|</span>
+    <span class="t-open">● OPEN NOW</span>
+    <span class="t-sep">|</span>
+    <!-- Repeat for seamless loop -->
+    <span>🔥 Ember &amp; Thyme</span>
+    <span class="t-sep">|</span>
+    <span class="t-open">● OPEN NOW</span>
+    <span class="t-sep">|</span>
+    <span>Mon – Fri: 11:00 AM – 11:00 PM</span>
+    <span class="t-sep">✦</span>
+    <span>Sat – Sun: 10:00 AM – 12:00 AM</span>
+    <span class="t-sep">|</span>
+    <span>📍 87 King Street West, Toronto, ON M5H 1S3</span>
+    <span class="t-sep">✦</span>
+    <span>📞 Reservations: +1 (416) 555 0192</span>
+    <span class="t-sep">|</span>
+    <span class="t-open">● OPEN NOW</span>
+    <span class="t-sep">|</span>
+  </div>
+</div>
+
+<nav id="mainNav">
+  <a class="logo" href="index.html">
+    <div class="logo-flame">🔥</div>
+    <div class="logo-text">
+      <span class="logo-name">Ember & Thyme</span>
+      <span class="logo-tagline">Fine Dining — Est. 2014</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="menu.html">Menu</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="contact.html#reserve" class="nav-reserve">Reserve a Table</a></li>
+  </ul>
+  <div class="hamburger" id="ham" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+
+<!-- ===== PAGE HERO ===== -->
+<div class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-hero-ov"></div>
+  <div class="page-hero-content">
+    <span class="page-hero-label">Our Story</span>
+    <h1 class="page-hero-title">Where Every Flame<br><em>Tells a Story</em></h1>
+    <p class="page-hero-sub">Born from a love of fire, craft, and the belief that every great meal deserves to be remembered.</p>
+  </div>
+</div>
+
+<!-- ===== STORY ===== -->
+<section class="story">
+  <div class="story-img">
+    <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=900&q=80" alt="Chef at Ember & Thyme">
+    <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=80" alt="Dish" class="story-img-accent">
+    <div class="story-award">
+      <span class="story-award-num">10+</span>
+      <span class="story-award-txt">Years of Excellence</span>
+    </div>
+  </div>
+  <div class="story-body">
+    <h2>A Kitchen Built on<br><em>Passion & Fire</em></h2>
+    <p>Ember & Thyme was born in 2014 from a simple but uncompromising idea — that great food should tell a story. Founded by Chef Marco Rossi after a decade working in Michelin-starred kitchens across Europe, our restaurant brought something Toronto had never quite experienced before: a wood-fired kitchen where every dish is shaped by flame.</p>
+    <p>We chose King Street West not by accident but by instinct. This neighbourhood has always attracted people who refuse to settle — artists, entrepreneurs, dreamers. It felt like the right place to build something that would last.</p>
+    <p>Over ten years later, we've served over 200,000 guests, earned a reputation as one of Canada's most distinctive dining destinations, and never once compromised on the things that matter most: ingredients, technique, and the warmth of genuine hospitality.</p>
+    <div style="margin-top:32px;">
+      <div class="story-sig">Marco Rossi</div>
+      <div class="story-sig-title">Founder & Head Chef</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS BAR ===== -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item"><div class="stat-num">10+</div><div class="stat-label">Years Open</div></div>
+    <div class="stat-item"><div class="stat-num">4.9★</div><div class="stat-label">Average Rating</div></div>
+    <div class="stat-item"><div class="stat-num">200K+</div><div class="stat-label">Guests Served</div></div>
+    <div class="stat-item"><div class="stat-num">50K+</div><div class="stat-label">Five-Star Reviews</div></div>
+  </div>
+</div>
+
+<!-- ===== VALUES ===== -->
+<section class="values">
+  <span class="section-label" style="display:block;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--amber);margin-bottom:14px;">What We Stand For</span>
+  <h2 style="font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,44px);color:var(--white);">Our Philosophy</h2>
+  <div class="values-grid">
+    <div class="value-card">
+      <div class="value-icon">🔥</div>
+      <div class="value-title">Fire First</div>
+      <div class="value-desc">Wood fire is not a technique — it's a philosophy. Every dish that leaves our kitchen has been shaped by real flame, real smoke, and real heat. We believe fire reveals the truth in every ingredient.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">🌿</div>
+      <div class="value-title">Local & Seasonal</div>
+      <div class="value-desc">We source from Ontario farms we trust by name. Our menu changes with the seasons — not as a trend, but because food tastes better when it's fresh, close, and grown with care.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">🍷</div>
+      <div class="value-title">Crafted with Intention</div>
+      <div class="value-desc">Nothing on our menu is accidental. Every pairing, every garnish, every plating decision is deliberate. We believe the details are what separate a good meal from an unforgettable one.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">🤝</div>
+      <div class="value-title">Genuine Hospitality</div>
+      <div class="value-desc">Fine dining shouldn't feel stiff. We want you to feel like a valued guest in our home — relaxed, cared for, and certain that every person in this building is here to make your evening exceptional.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">♻️</div>
+      <div class="value-title">Sustainable Kitchen</div>
+      <div class="value-desc">We compost, we reduce waste, and we work with suppliers who share our values. A restaurant that cares about its community should also care about the planet that feeds it.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">⭐</div>
+      <div class="value-title">No Compromise</div>
+      <div class="value-desc">We've never used a shortcut that compromised the food. Our pasta is made by hand every morning. Our bread is baked fresh daily. Some things are worth the extra effort — everything we serve is one of them.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TEAM ===== -->
+<section class="team">
+  <div style="text-align:center;">
+    <span style="display:block;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--amber);margin-bottom:14px;">The People Behind the Flame</span>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,44px);color:var(--white);">Meet Our Team</h2>
+  </div>
+  <div class="team-grid">
+    <div class="team-card">
+      <img src="https://images.unsplash.com/photo-1583394293214-0fd08f0b6b1c?w=600&h=500&fit=crop&q=80" alt="Chef Marco Rossi">
+      <div class="team-overlay">
+        <div class="team-name">Marco Rossi</div>
+        <div class="team-role">Founder & Head Chef</div>
+        <div class="team-bio">Trained in Rome and Paris. Spent 10 years in Michelin-starred kitchens before bringing his wood-fired vision to Toronto.</div>
+      </div>
+    </div>
+    <div class="team-card">
+      <img src="https://images.unsplash.com/photo-1607631568010-a87245c0daf8?w=600&h=500&fit=crop&q=80" alt="Sofia Laurent">
+      <div class="team-overlay">
+        <div class="team-name">Sofia Laurent</div>
+        <div class="team-role">Head Sommelier</div>
+        <div class="team-bio">Certified sommelier with a passion for natural wines. Curates our cellar with over 200 labels from 14 countries.</div>
+      </div>
+    </div>
+    <div class="team-card">
+      <img src="https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=600&h=500&fit=crop&q=80" alt="James Okafor">
+      <div class="team-overlay">
+        <div class="team-name">James Okafor</div>
+        <div class="team-role">Pastry Chef</div>
+        <div class="team-bio">The genius behind our dessert platter. James trained at Le Cordon Bleu and has been crafting our sweet finales since day one.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<div class="about-cta">
+  <h2>Ready to Experience<br><em>Ember & Thyme?</em></h2>
+  <p>Come see for yourself why Toronto keeps coming back. Reserve your table for an evening you won't forget.</p>
+  <a href="contact.html#reserve" class="btn-fire">Reserve Your Table</a>
+</div>
+
+<footer>
+  <div class="footer-top">
+    <div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <span style="font-size:24px;animation:flamePulse 2s ease-in-out infinite;">🔥</span>
+        <span style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--amber-light);">Ember & Thyme</span>
+      </div>
+      <div class="footer-tagline">"Every meal is a memory in the making."</div>
+    </div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="menu.html">Menu</a>
+      <a href="contact.html">Contact</a>
+      <a href="contact.html#reserve">Reservations</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 Ember & Thyme Restaurant. All rights reserved.</span>
+    <span>87 King Street West, Toronto, ON M5H 1S3</span>
+    <span><a href="#" style="color:var(--amber-light);text-decoration:none;">Privacy Policy</a></span>
+  </div>
+</footer>
+
+<script>
+function toggleMenu(){
+  document.getElementById('ham').classList.toggle('open');
+  document.querySelector('.mobile-menu').classList.toggle('open');
+}
+</script>
+</body>
+</html>
