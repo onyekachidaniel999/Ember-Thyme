@@ -482,12 +482,106 @@ footer{
   .footer-top{flex-direction:column;text-align:center;}
   .footer-bottom{flex-direction:column;text-align:center;}
   .exp-stats{gap:24px;}
+
+  /* Fix menu card height on mobile so content fits */
+  .mcard{height:280px;}
+  .mcard-feat{height:260px;}
+  .mcard-hover{padding:18px;justify-content:flex-start;padding-top:22px;}
+  .mcard-hover-name{font-size:17px;margin-bottom:6px;}
+  .mcard-hover-desc{font-size:12px;line-height:1.6;margin-bottom:10px;}
+  .mcard-hover-price{font-size:18px;margin-bottom:4px;}
+  .mcard-varieties{gap:4px;margin-top:6px;}
+  .variety-tag{font-size:8px;padding:3px 8px;}
+  .mcard-base{padding:14px;}
+  .mcard-name{font-size:16px;}
+  .mcard-price{font-size:15px;}
+
+  /* Better section padding on tablet/mobile */
+  .about-strip{padding:56px 24px;}
+  .exp-band{padding:64px 24px;}
+  .hc-col{padding:40px 24px;}
+  .reservation{padding:56px 24px;}
+  .menu-section{padding:56px 24px;}
+
+  /* Prevent text from touching border lines */
+  .hrow{padding-bottom:14px;padding-top:4px;}
+  .hc-col:first-child{border-right:none;border-bottom:1px solid rgba(212,135,10,0.12);padding-bottom:40px;}
+  .hc-col:last-child{padding-top:40px;}
+
+  /* Buttons breathing room */
+  .btn-fire,.btn-outline-warm{padding:14px 28px;}
+  .res-submit{margin-top:8px;}
+
+  /* Footer spacing */
+  .footer-links{justify-content:center;}
+  .footer-top{gap:20px;padding-bottom:8px;}
 }
 @media(max-width:480px){
   .hero-btns{flex-direction:column;}
   .btn-fire,.btn-outline-warm{text-align:center;width:100%;}
   .menu-tabs{gap:6px;}
   .mtab{padding:8px 14px;font-size:9px;}
+
+  /* Section spacing on mobile */
+  .about-strip{padding:48px 20px;}
+  .about-body{font-size:14px;}
+  .about-perks{gap:10px;}
+
+  /* Menu section */
+  .menu-header{margin-bottom:28px;}
+  .mcard-body{padding:16px;}
+  .mcard-title{font-size:15px;}
+
+  /* Experience band */
+  .exp-band{padding:56px 20px;}
+  .exp-stats{gap:20px;}
+  .exp-stat-num{font-size:28px;}
+  .exp-inner p{font-size:14px;}
+
+  /* Hours & Contact */
+  .hc-col{padding:36px 20px;}
+  .hrow{padding-bottom:12px;gap:8px;}
+  .hrow .day{font-size:13px;}
+  .hrow .time{font-size:13px;}
+
+  /* Contact info items */
+  .ci-item{margin-bottom:18px;gap:12px;}
+  .ci-icon{width:36px;height:36px;font-size:14px;flex-shrink:0;}
+  .ci-text{font-size:13px;line-height:1.5;}
+
+  /* Reservation form */
+  .reservation{padding:48px 20px;}
+  .rf-row{gap:12px;}
+  .res-input,.res-select,.res-textarea{font-size:14px;padding:12px 14px;}
+  .res-label{font-size:10px;}
+  .res-submit{padding:14px;font-size:12px;}
+
+  /* Section titles */
+  .section-title{font-size:clamp(26px,7vw,36px);}
+  .section-label{font-size:9px;letter-spacing:3px;}
+
+  /* Float buttons */
+  .float-wa{width:44px;height:44px;font-size:20px;bottom:16px;left:12px;}
+  .float-call{font-size:11px;padding:10px 14px;bottom:16px;right:12px;}
+
+  /* Footer */
+  .footer-links{gap:16px;justify-content:center;}
+  .footer-links a{font-size:10px;}
+  .footer-bottom{gap:8px;font-size:10px;}
+
+  /* Hours ticker */
+  .hours-ticker{font-size:11px;}
+
+  /* Divider spacing */
+  .sec-divider{margin:0;}
+  section, .about-strip, .exp-band, .hours-contact, .reservation{
+    border-top: none;
+  }
+  
+  /* Ensure content never touches divider lines */
+  .about-strip > *, .exp-inner > *, .hc-col > *, .reservation > *{
+    margin-bottom: 16px;
+  }
 }
 </style>
 </head>
@@ -1022,6 +1116,26 @@ function filterMenu(btn,cat){
     card.style.display = show ? '' : 'none';
   });
 }
+
+// TOUCH SUPPORT FOR MENU CARDS ON MOBILE
+if('ontouchstart' in window){
+  document.querySelectorAll('.mcard').forEach(card => {
+    card.addEventListener('touchstart', function(e){
+      e.preventDefault();
+      const isActive = this.classList.contains('touch-active');
+      document.querySelectorAll('.mcard.touch-active').forEach(c => c.classList.remove('touch-active'));
+      if(!isActive) this.classList.add('touch-active');
+    }, {passive: false});
+  });
+}
+
+// Add touch-active CSS
+const touchStyle = document.createElement('style');
+touchStyle.textContent = `
+  .mcard.touch-active .mcard-base{transform:translateY(60px);opacity:0;}
+  .mcard.touch-active .mcard-hover{transform:translateY(0);}
+`;
+document.head.appendChild(touchStyle);
 
 // OPEN/CLOSED STATUS - dynamically update ticker
 function getStatus(){
