@@ -1119,13 +1119,22 @@ function filterMenu(btn,cat){
 
 // TOUCH SUPPORT FOR MENU CARDS ON MOBILE
 if('ontouchstart' in window){
+  let touchStartY = 0;
   document.querySelectorAll('.mcard').forEach(card => {
     card.addEventListener('touchstart', function(e){
-      e.preventDefault();
-      const isActive = this.classList.contains('touch-active');
-      document.querySelectorAll('.mcard.touch-active').forEach(c => c.classList.remove('touch-active'));
-      if(!isActive) this.classList.add('touch-active');
-    }, {passive: false});
+      touchStartY = e.touches[0].clientY;
+    }, {passive: true});
+
+    card.addEventListener('touchend', function(e){
+      const touchEndY = e.changedTouches[0].clientY;
+      const diff = Math.abs(touchEndY - touchStartY);
+      // Only toggle if it's a tap not a scroll (movement less than 10px)
+      if(diff < 10){
+        const isActive = this.classList.contains('touch-active');
+        document.querySelectorAll('.mcard.touch-active').forEach(c => c.classList.remove('touch-active'));
+        if(!isActive) this.classList.add('touch-active');
+      }
+    }, {passive: true});
   });
 }
 
